@@ -1,0 +1,279 @@
+WHITE WINE QUALITY ANALYSIS by Kasey Cox
+========================================================
+
+__Overview of data to be analyzed:__ This tidy data set contains 4,898 white 
+wines with 11 variables on quantifying the chemical properties of each wine. At 
+least 3 wine experts rated the quality of each wine, providing a rating between 
+0 (very bad) and 10 (very excellent). This is a curated data set provided by
+Udacity using the following research article:
+
+Cortez, P.; Cerdeira, A.; Almeida, F.; Matos, T.; Reis, J.  
+Modeling wine preferences by data mining from physicochemical properties.  
+_Decision Support Systems_. __2009__, _47_, 547-553.
+
+[Elsevier](http://dx.doi.org/10.1016/j.dss.2009.05.016)  
+[Pre-press (pdf)](http://www3.dsi.uminho.pt/pcortez/winequality09.pdf)  
+[bib](http://www3.dsi.uminho.pt/pcortez/dss09.bib)
+
+__Question guiding investigation:__ Which chemical properties influence the 
+quality of white wines?
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+# Load all of the packages that you end up using in your analysis in this code
+# chunk.
+
+# Notice that the parameter "echo" was set to FALSE for this code chunk. This
+# prevents the code from displaying in the knitted HTML output. You should set
+# echo=FALSE for all code chunks in your file, unless it makes sense for your
+# report to show the code that generated a particular plot.
+
+library(ggplot2)
+library(gridExtra)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Load the Data
+white.wine.df <- read.csv("wineQualityWhites.csv")
+```
+
+# Univariate Plots Section
+
+__Preliminary information on the data set:__  
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+str(white.wine.df)
+summary(white.wine.df)
+```
+
+This data includes 4898 observations with 13 variables.
+
+__Some histograms of organic acid contents and overall acidity (pH):__  
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ta.hist <- ggplot(data = white.wine.df, aes(x = fixed.acidity)) +
+  geom_histogram() +
+  labs(x = "Fixed acidity (g/dm^3 of tartaric acid)")
+
+ca.hist <- ggplot(data = white.wine.df, aes(x = citric.acid)) +
+  geom_histogram() +
+  labs(x = "Citric acid content (g/dm^3)")
+
+aa.hist <- ggplot(data = white.wine.df, aes(x = volatile.acidity)) +
+  geom_histogram() +
+  labs(x = "Volatile Acidity (g/dm^3 of acetic acid)")
+
+ph.hist <- ggplot(data = white.wine.df, aes(x = pH)) +
+  geom_histogram() +
+  labs(x = "pH")
+
+grid.arrange(ta.hist, ca.hist, aa.hist, ph.hist, ncol =2)
+```
+
+The various acid measures all have a normal distribution, some with a few
+outliers.
+
+__Histograms of sulfur measures:__  
+```{r Sulfur measures, echo=FALSE, message=FALSE, warning=FALSE}
+sulf.hist <- ggplot(data = white.wine.df, aes(x = sulphates)) +
+  geom_histogram() +
+  labs(x = "Sulphates (added potassium sulphate - g/dm^3)")
+
+free.sulf.diox <- ggplot(data = white.wine.df, aes(x = free.sulfur.dioxide)) +
+  geom_histogram() +
+  labs(x = "free sulfur dioxide (mg / dm^3)")
+
+total.sulf.diox <- ggplot(data = white.wine.df, aes(x = total.sulfur.dioxide)) +
+  geom_histogram() +
+  labs(x = "free sulfur dioxide (mg / dm^3)")
+
+grid.arrange(sulf.hist, free.sulf.diox, total.sulf.diox, ncol = 2)
+```
+
+The sulfur measures also have normal distribution, though an extreme outlier
+exists for the free sulfur dioxide histogram.
+
+__Histograms of other wine attributes:__  
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+res.sugar.hist <- ggplot(data = white.wine.df, aes(x = residual.sugar)) +
+  geom_histogram() +
+  labs(x = "Residual sugars (g/dm^3)")
+
+density.hist <- ggplot(data = white.wine.df, aes(x = density)) +
+  geom_histogram() +
+  labs(x = "density (g/cm^3)")
+
+grid.arrange(res.sugar.hist, density.hist, ncol = 2)
+```
+
+We can see an outlier in both residual sugars and density. My suspicion is
+that they are the same wine (or few wines). Dissolved sugar increases the
+density of water (which is 1.00 g/cm^3).
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+print(paste("High density wine:", 
+            white.wine.df$density[white.wine.df$density > 1.02]))
+
+print(paste("High residual sugar wine:", 
+            white.wine.df$residual.sugar[white.wine.df$residual.sugar > 60]))
+
+subset(white.wine.df, white.wine.df$density > 1.02)
+```
+
+We can see that they are indeed the same wine.
+
+__Other quality measures:__  
+Sodium chloride content  
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+nacl.hist <- ggplot(data = white.wine.df, aes(x = chlorides)) +
+  geom_histogram() +
+  labs(x = "Sodium chloride (g/dm^3)")
+
+summary(white.wine.df$chlorides)
+```
+
+There is a little bit of a tail in the sodium chloride data; most of the 
+values are less than 0.05, yet there are a handful of values greater than 0.2 
+Let's do a log base 10 transform on the x-axis.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+nacl.log10.hist <- ggplot(data = white.wine.df, aes(x = chlorides)) +
+  geom_histogram() +
+  labs(x = "Log 10 Sodium Chloride") +
+  scale_x_log10()
+
+grid.arrange(nacl.hist, nacl.log10.hist, ncol = 1)
+```
+
+We see that there really aren't many data points beyond 0.1 g/dm^3. This is
+consistent with the mean not being far from the median.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = white.wine.df, aes(x = alcohol)) +
+  geom_histogram(binwidth = 0.25) +
+  labs(x = "Alcohol (ABV - % by volume)")
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = white.wine.df, aes(x = quality)) +
+  geom_histogram(binwidth = 1) +
+  labs(x = "Quality Rating (0 - 10)") +
+  scale_x_continuous(limits = c(2, 10), breaks = seq(0, 10, 1))
+```
+
+The quality ratings are uniformly distributed around 6 (the mode).
+
+# Univariate Analysis
+
+> **Tip**: Now that you've completed your univariate explorations, it's time to
+reflect on and summarize what you've found. Use the questions below to help you
+gather your observations and add your own if you have other thoughts!
+
+### What is the structure of your dataset?
+
+### What is/are the main feature(s) of interest in your dataset?
+
+### What other features in the dataset do you think will help support your \
+investigation into your feature(s) of interest?
+
+### Did you create any new variables from existing variables in the dataset?
+
+### Of the features you investigated, were there any unusual distributions? \
+Did you perform any operations on the data to tidy, adjust, or change the form \
+of the data? If so, why did you do this?
+
+
+# Bivariate Plots Section
+
+> **Tip**: Based on what you saw in the univariate plots, what relationships
+between variables might be interesting to look at in this section? Don't limit
+yourself to relationships between a main output feature and one of the
+supporting variables. Try to look at relationships between supporting variables
+as well.
+
+```{r echo=FALSE, Bivariate_Plots}
+
+```
+
+# Bivariate Analysis
+
+> **Tip**: As before, summarize what you found in your bivariate explorations
+here. Use the questions below to guide your discussion.
+
+### Talk about some of the relationships you observed in this part of the \
+investigation. How did the feature(s) of interest vary with other features in \
+the dataset?
+
+### Did you observe any interesting relationships between the other features \
+(not the main feature(s) of interest)?
+
+### What was the strongest relationship you found?
+
+
+# Multivariate Plots Section
+
+> **Tip**: Now it's time to put everything together. Based on what you found in
+the bivariate plots section, create a few multivariate plots to investigate
+more complex interactions between variables. Make sure that the plots that you
+create here are justified by the plots you explored in the previous section. If
+you plan on creating any mathematical models, this is the section where you
+will do that.
+
+```{r echo=FALSE, Multivariate_Plots}
+
+```
+
+# Multivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the \
+investigation. Were there features that strengthened each other in terms of \
+looking at your feature(s) of interest?
+
+### Were there any interesting or surprising interactions between features?
+
+### OPTIONAL: Did you create any models with your dataset? Discuss the \
+strengths and limitations of your model.
+
+------
+
+# Final Plots and Summary
+
+> **Tip**: You've done a lot of exploration and have built up an understanding
+of the structure of and relationships between the variables in your dataset.
+Here, you will select three plots from all of your previous exploration to
+present here as a summary of some of your most interesting findings. Make sure
+that you have refined your selected plots for good titling, axis labels (with
+units), and good aesthetic choices (e.g. color, transparency). After each plot,
+make sure you justify why you chose each plot by describing what it shows.
+
+### Plot One
+```{r echo=FALSE, Plot_One}
+
+```
+
+### Description One
+
+
+### Plot Two
+```{r echo=FALSE, Plot_Two}
+
+```
+
+### Description Two
+
+
+### Plot Three
+```{r echo=FALSE, Plot_Three}
+
+```
+
+### Description Three
+
+------
+
+# Reflection
+
+> **Tip**: Here's the final step! Reflect on the exploration you performed and
+the insights you found. What were some of the struggles that you went through?
+What went well? What was surprising? Make sure you include an insight into
+future work that could be done with the dataset.
+
+> **Tip**: Don't forget to remove this, and the other **Tip** sections before
+saving your final work and knitting the final report!
