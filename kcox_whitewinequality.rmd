@@ -36,17 +36,17 @@ library(gridExtra)
 white.wine.df <- read.csv("wineQualityWhites.csv")
 ```
 
+***
+
 # Univariate Plots Section
 
-__Preliminary information on the data set:__  
+### Preliminary information on the data set  
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 str(white.wine.df)
 summary(white.wine.df)
 ```
 
-This data includes 4898 observations with 13 variables.
-
-__Some histograms of organic acid contents and overall acidity (pH):__  
+### Organic acid contents and overall acidity (pH)  
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 ta.hist <- ggplot(data = white.wine.df, aes(x = fixed.acidity)) +
   geom_histogram() +
@@ -67,10 +67,61 @@ ph.hist <- ggplot(data = white.wine.df, aes(x = pH)) +
 grid.arrange(ta.hist, ca.hist, aa.hist, ph.hist, ncol =2)
 ```
 
-The various acid measures all have a normal distribution, some with a few
-outliers.
+The various acid measures all have a normal distribution, with all but pH having
+a few outliers (in a visual sense).
 
-__Histograms of sulfur measures:__  
+__Citric acid:__  
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+print(paste("A few of the more extreme values...", head(subset(white.wine.df, 
+            white.wine.df$citric.acid > 0.9, select = citric.acid))))
+
+print(paste("3rd quartile:", quantile(white.wine.df$citric.acid, 0.75)))
+
+print(paste("99th percentile:", 
+            quantile(white.wine.df$citric.acid, 0.99)))
+
+```
+
+The mean (0.3342) and median (0.3200) are similar in the citric acid 
+distribution, meaning few wines exist in the tail and that most of the wines 
+follow the normal distribution.
+
+__Fixed acidity (tartaric acid):__  
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+#subset(white.wine.df, 
+       #white.wine.df$fixed.acidity > 10.0)[c("X", "fixed.acidity")]
+
+print(paste("A few of the more extreme values...", head(subset(white.wine.df, 
+            white.wine.df$fixed.acidity > 10.0, select = fixed.acidity))))
+
+print(paste("3rd quartile:", quantile(white.wine.df$fixed.acidity, 0.75)))
+
+print(paste("99th percentile:", 
+            quantile(white.wine.df$fixed.acidity, 0.99)))
+```
+
+The mean (6.855) and median (6.800) of fixed acidities are close in the 
+distribution, meaning few wines exist in the tail and that most of the wines 
+follow the normal distribution.
+
+__Volatile acidity (acetic acid):__  
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+print(paste("A few of the more extreme values...", head(subset(white.wine.df, 
+            white.wine.df$volatile.acidity > 0.9, select = volatile.acidity))))
+
+print(paste("3rd quartile:", quantile(white.wine.df$volatile.acidity, 0.75)))
+
+print(paste("99th percentile:", 
+            quantile(white.wine.df$volatile.acidity, 0.99)))
+```
+
+The mean (0.2782) and median (0.2600) of volatile acidities are close in the 
+distribution, meaning few wines exist in the tail and that most of the wines 
+follow the normal distribution.
+
+### Sulfur measures
 ```{r Sulfur measures, echo=FALSE, message=FALSE, warning=FALSE}
 sulf.hist <- ggplot(data = white.wine.df, aes(x = sulphates)) +
   geom_histogram() +
@@ -82,7 +133,7 @@ free.sulf.diox <- ggplot(data = white.wine.df, aes(x = free.sulfur.dioxide)) +
 
 total.sulf.diox <- ggplot(data = white.wine.df, aes(x = total.sulfur.dioxide)) +
   geom_histogram() +
-  labs(x = "free sulfur dioxide (mg / dm^3)")
+  labs(x = "total sulfur dioxide (mg / dm^3)")
 
 grid.arrange(sulf.hist, free.sulf.diox, total.sulf.diox, ncol = 2)
 ```
@@ -90,7 +141,45 @@ grid.arrange(sulf.hist, free.sulf.diox, total.sulf.diox, ncol = 2)
 The sulfur measures also have normal distribution, though an extreme outlier
 exists for the free sulfur dioxide histogram.
 
-__Histograms of other wine attributes:__  
+__Sulfates (added):__  
+The distribution of sulfates is roughly normal.  
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+summary(white.wine.df$sulphates)
+
+print(paste("3rd quartile:", quantile(white.wine.df$sulphates, 0.75)))
+
+print(paste("99th percentile:", 
+            quantile(white.wine.df$sulphates, 0.99)))
+```
+
+
+__Free sulfur dioxide:__  
+The distribution of free sulfur dioxide is roughly normal, with an extreme
+outlier (max).
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+summary(white.wine.df$free.sulfur.dioxide)
+
+print(paste("3rd quartile:", quantile(white.wine.df$free.sulfur.dioxide, 0.75)))
+
+print(paste("99th percentile:", 
+            quantile(white.wine.df$free.sulfur.dioxide, 0.99)))
+```
+
+__Total sulfur dioxide:__  
+The distribution of total sulfur dioxide is roughly normal, with an extreme
+outlier (max).
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+summary(white.wine.df$total.sulfur.dioxide)
+
+print(paste("3rd quartile:", quantile(white.wine.df$total.sulfur.dioxide, 0.75)))
+
+print(paste("99th percentile:", 
+            quantile(white.wine.df$total.sulfur.dioxide, 0.99)))
+```
+
+
+### Other wine attributes
+__Density and residual sugar:__  
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 res.sugar.hist <- ggplot(data = white.wine.df, aes(x = residual.sugar)) +
   geom_histogram() +
@@ -103,9 +192,10 @@ density.hist <- ggplot(data = white.wine.df, aes(x = density)) +
 grid.arrange(res.sugar.hist, density.hist, ncol = 2)
 ```
 
-We can see an outlier in both residual sugars and density. My suspicion is
-that they are the same wine (or few wines). Dissolved sugar increases the
-density of water (which is 1.00 g/cm^3).
+In the distributions for both density and residual sugar, we can see an extreme 
+outlier (maybe more than one) in both. The distributions are otherwise 
+relatively narrow. My suspicion is that they are the same wine (or few wines). 
+Dissolved sugar increases the density of water (which is 1.00 g/cm^3).
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 print(paste("High density wine:", 
@@ -114,13 +204,13 @@ print(paste("High density wine:",
 print(paste("High residual sugar wine:", 
             white.wine.df$residual.sugar[white.wine.df$residual.sugar > 60]))
 
-subset(white.wine.df, white.wine.df$density > 1.02)
+subset(white.wine.df, white.wine.df$density > 1.02)[c("residual.sugar", 
+                                                      "density")]
 ```
 
 We can see that they are indeed the same wine.
 
-__Other quality measures:__  
-Sodium chloride content  
+__Sodium chloride:__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 nacl.hist <- ggplot(data = white.wine.df, aes(x = chlorides)) +
   geom_histogram() +
@@ -145,12 +235,16 @@ grid.arrange(nacl.hist, nacl.log10.hist, ncol = 1)
 We see that there really aren't many data points beyond 0.1 g/dm^3. This is
 consistent with the mean not being far from the median.
 
+__Alcohol (ABV - % by volume):__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(data = white.wine.df, aes(x = alcohol)) +
   geom_histogram(binwidth = 0.25) +
   labs(x = "Alcohol (ABV - % by volume)")
 ```
 
+The distribution of ABV is roughly normal.
+
+__Quality Ratings:__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(data = white.wine.df, aes(x = quality)) +
   geom_histogram(binwidth = 1) +
@@ -167,8 +261,16 @@ reflect on and summarize what you've found. Use the questions below to help you
 gather your observations and add your own if you have other thoughts!
 
 ### What is the structure of your dataset?
+This data has 4898 observations with 13 features (variables). These features are
+"X", "fixed.acidity", "volatile.acidity", "citric.acid", "residual.sugar",
+"chlorides", "free.sulfur.dioxide", "total.sulfur.dioxide" "density", "pH", 
+"sulphates", "alcohol", and "quality".
+
+Most of the variables are numerical, except for "quality". Although it consists
+of numbers, they represent rank rather than being numbers in the strict sense.
 
 ### What is/are the main feature(s) of interest in your dataset?
+
 
 ### What other features in the dataset do you think will help support your \
 investigation into your feature(s) of interest?
