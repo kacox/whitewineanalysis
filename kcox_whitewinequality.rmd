@@ -406,26 +406,51 @@ reflect on and summarize what you've found. Use the questions below to help you
 gather your observations and add your own if you have other thoughts!
 
 ### What is the structure of your dataset?
-This data has 4898 observations with 13 features (variables). These features are
-"X", "fixed.acidity", "volatile.acidity", "citric.acid", "residual.sugar",
-"chlorides", "free.sulfur.dioxide", "total.sulfur.dioxide" "density", "pH", 
-"sulphates", "alcohol", and "quality".
+This data has 4898 observations (wines) with 13 features (variables). These 
+features are "X", "fixed.acidity", "volatile.acidity", "citric.acid", 
+"residual.sugar", "chlorides", "free.sulfur.dioxide", "total.sulfur.dioxide", 
+"density", "pH", "sulphates", "alcohol", and "quality".
 
 Most of the variables are numerical, except for "quality". Although it consists
-of numbers, they represent rank rather than being numbers in the strict sense.
+of numbers, the numbers represent rank rather than being numbers in the strict 
+mathematical sense. When I loaded the data, R interpreted it as a numerical 
+vector, so I purposely changed it to a factor to properly reflect what it 
+stands for.
 
 ### What is/are the main feature(s) of interest in your dataset?
 
+The main feature of my data set is "quality" which, as mentioned in the previous
+answer, represets a ranking: 0 to 10 with 0 being the worst quality rating and 
+10 being the best quality rating.
+
+The goal of this analysis is to determine which chemical properties affect the
+wine's rating (quality).
 
 ### What other features in the dataset do you think will help support your \
 investigation into your feature(s) of interest?
 
+Because we want to know which chemical properties affect quality, a feature's 
+importance will be determined relative to its effect on quality.
+
+So far, a few features stand out: alchohol content, chloride content, free 
+sulfur dioxide, and volatile acidity.
+
 ### Did you create any new variables from existing variables in the dataset?
+
+Yes. I created a "quality.category" (factor) variable using the "quality" 
+variable. This factor has three levels: "Worst", "Middle", and "Best". If a 
+wine was rated poorly (0-3), its quality.category value is "Worst". A rating 
+of 5-7 corresponds to "Middle". A rating of 8-10 represents "Best".
 
 ### Of the features you investigated, were there any unusual distributions? \
 Did you perform any operations on the data to tidy, adjust, or change the form \
 of the data? If so, why did you do this?
 
+The histogram of chloride content had a long tail with what appeared to be many 
+data points along its length. I did a log transformation along its x-axis to 
+see if there really were a good amount of data points in the tail. After the 
+transformation, I found that the tail was less significant than I had 
+originally thought.
 
 # Bivariate Plots Section
 
