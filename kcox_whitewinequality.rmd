@@ -29,6 +29,7 @@ quality of white wines?
 
 library(ggplot2)
 library(gridExtra)
+library(plyr)
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
@@ -253,6 +254,150 @@ ggplot(data = white.wine.df, aes(x = quality)) +
 ```
 
 The quality ratings are uniformly distributed around 6 (the mode).
+
+### Comparing the best, middle, and worst wines
+Wine ratings were made on a scale of 0 to 10, with 0 being the worst. In this
+data, wines ranged from 3 to 9. I divided the ratings as follows:  
+* Worst: wines rated 3, 4  
+* Middle: wines rated 5, 6, 7  
+* Best: wines rated 8, 9  
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# Make quality categorical
+white.wine.df$quality <- factor(x = white.wine.df$quality, levels = c(0:10), ordered = TRUE)
+
+# Add new categorical variable
+white.wine.df$quality.category <- ifelse(white.wine.df$quality >= 8, "Best", 
+                                         ifelse(white.wine.df$quality >= 5, 
+                                                "Middle", 
+                                                ifelse(white.wine.df$quality 
+                                                       >= 3, "Worst", "Other")))
+
+# Number of wines in each category (need plyr loaded)
+print(paste("Best rated wines:", 
+            count(white.wine.df$quality.category == "Best")))
+print(paste("Middle rated wines:", 
+            count(white.wine.df$quality.category == "Middle")))
+print(paste("Worst rated wines:", 
+            count(white.wine.df$quality.category == "Worst")))
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# Boxplot theme
+boxplot.theme <- theme(panel.background = element_rect(fill="gray90", color="gray90"),
+        panel.grid.major.y = element_blank(),
+        panel.grid.major.x = element_line(color = "gray50"),
+        panel.grid.minor.x = element_blank(), 
+        plot.title = element_text(size=18, hjust=0.5),
+        legend.title = element_blank())
+
+boxplot.colors <- scale_fill_manual(values=c("green3", "deepskyblue3", "red2"))
+```
+
+__Volatile acidity:__  
+In the text accompanying the data set, there is information on the variables
+contained in the data. Of note is this: "volatile acidity: the amount of acetic 
+acid in wine, which at too high of levels can lead to an unpleasant, vinegar 
+taste."
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = white.wine.df, aes(x = quality.category, y = volatile.acidity)) +
+  geom_boxplot(aes(fill = quality.category)) +
+  coord_flip() +
+  labs(x = "Quality Category", y = "Volatile Acidity (acetic acid; g/dm^3)",
+       title = "Volatile Acidity by Quality") +
+  boxplot.colors +
+  boxplot.theme +
+  stat_summary(fun.y = mean, geom = "point", shape = 4)
+```
+
+It seems that poorly rated wines tend to have higher volatile acidity. This is 
+something that will be further explored in the bivariate analysis.
+
+__pH:__  
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = white.wine.df, aes(x = quality.category, y = pH)) +
+  geom_boxplot(aes(fill = quality.category)) +
+  coord_flip() +
+  labs(x = "Quality Category", y = "pH", title = "pH by Quality") +
+  boxplot.colors +
+  boxplot.theme +
+  stat_summary(fun.y = mean, geom = "point", shape = 4)
+```
+
+Better wines appear to have a (relatively) higher pH, with the middle rated
+wines having a lot of variability. This is something that will be further 
+explored in the bivariate analysis.
+
+__Free sulfur dioxide:__  
+Another note from the text accompanying the data set: "total sulfur dioxide: 
+amount of free and bound forms of S02; in low  concentrations, SO2 is mostly 
+undetectable in wine, but at free SO2 concentrations over 50 ppm, SO2 becomes 
+evident in the nose and taste of wine"
+
+At the cited 50 ppm, that would mean free sulfur dioxide would have to be at
+least 49.9 mg/dm^3 to be detectable.
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = white.wine.df, aes(x = quality.category, 
+                                 y = free.sulfur.dioxide)) +
+  geom_boxplot(aes(fill = quality.category)) +
+  coord_flip() +
+  labs(x = "Quality Category", y = "Free Sulfur Dioxide", 
+       title = "Free Sulfur Dioxide by Quality") +
+  stat_summary(fun.y = mean, geom = "point", shape = 4) +
+  boxplot.colors +
+  boxplot.theme
+```
+
+Somewhat counterintuitively, the median and mean free sulfur dioxide is higher
+in the better rated wines; however there is more variability in the worst
+wines. Note that the wine with the highest free sulfur dioxide is in the
+worst category.
+
+__Residual sugar:__  
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = white.wine.df, aes(x = quality.category, y = residual.sugar)) +
+  geom_boxplot(aes(fill = quality.category)) +
+  coord_flip(ylim = c(0, 30)) +
+  labs(x = "Quality Category", y = "Residual sugar (g/dm^3)", 
+       title = "Residual Sugar by Quality") +
+  stat_summary(fun.y = mean, geom = "point", shape = 4) +
+  boxplot.colors +
+  boxplot.theme
+```
+
+There doesn't appear to be a correlation at first glance.
+
+__Alcohol (ABV - % by volume):__  
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = white.wine.df, aes(x = quality.category, y = alcohol)) +
+  geom_boxplot(aes(fill = quality.category)) +
+  coord_flip() +
+  labs(x = "Quality Category", y = "Alcohol (ABV)", 
+       title = "ABV by Quality") +
+  stat_summary(fun.y = mean, geom = "point", shape = 4) +
+  boxplot.colors +
+  boxplot.theme
+```
+
+The better rated wines seem to generally have higher alcohol content.
+
+__Chlorides:__  
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = white.wine.df, aes(x = quality.category, y = chlorides)) +
+  geom_boxplot(aes(fill = quality.category)) +
+  coord_flip(ylim = c(0, 0.15)) +
+  labs(x = "Quality Category", y = "Sodium chloride (g / dm^3)", 
+       title = "Sodium Chloride Content by Quality") +
+  stat_summary(fun.y = mean, geom = "point", shape = 4) +
+  boxplot.colors +
+  boxplot.theme
+```
+
+The worse rated wines tend to have higher sodium chloride content. I found
+some information to corroborate this observation:  
+[Peer reviewed paper](http://www.scielo.br/scielo.php?script=sci_arttext&pid=S0101-20612015000100095)  
+[Blog post](http://wineoscope.com/2015/10/02/when-a-wine-is-salty-and-why-it-shouldnt-be/)
+
 
 # Univariate Analysis
 
