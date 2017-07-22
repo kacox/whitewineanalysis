@@ -153,7 +153,6 @@ print(paste("99th percentile:",
             quantile(white.wine.df$sulphates, 0.99)))
 ```
 
-
 __Free sulfur dioxide:__  
 The distribution of free sulfur dioxide is roughly normal, with an extreme
 outlier (max).
@@ -281,6 +280,45 @@ print(paste("Worst rated wines:",
             count(white.wine.df$quality.category == "Worst")))
 ```
 
+I am going to focus on some of the features of the best wines.
+
+```{r}
+best.va.hist <- ggplot(data = subset(white.wine.df, quality.category == "Best"), 
+                       aes(x = volatile.acidity)) + 
+  geom_histogram(bins = 40)
+
+best.ph.hist <- ggplot(data = subset(white.wine.df, quality.category == "Best"), 
+                       aes(x = pH)) +
+  geom_histogram(bins = 40)
+
+best.fsd.hist <- ggplot(data = subset(white.wine.df, quality.category == "Best"), 
+                        aes(x = free.sulfur.dioxide)) +
+  geom_histogram(bins = 40)
+
+best.rs.hist <- ggplot(data = subset(white.wine.df, quality.category == "Best"), 
+                       aes(x = residual.sugar)) +
+  geom_histogram(bins = 40)
+
+best.alcohol.hist <- ggplot(data = subset(white.wine.df, 
+                                          quality.category == "Best"), 
+                            aes(x = alcohol)) +
+  geom_histogram(bins = 40)
+
+best.nacl.hist <- ggplot(data = subset(white.wine.df, quality.category == "Best"), 
+                         aes(x = chlorides)) +
+  geom_histogram(bins = 40)
+
+grid.arrange(best.va.hist, best.ph.hist, best.fsd.hist, best.rs.hist, best.alcohol.hist, best.nacl.hist, ncol = 2)
+```
+
+It appears that in the best wines (rated 8 or greater), certain features show
+less variance whereas others vary greatly. For example, chloride content does 
+not seem to vary much (except for an extreme outlier); residual sugar has a 
+lot of variation.
+
+Most of the distribution show a normal or somewhat normal distribution. The
+chloride distribution is relatively normal. The residual sugar distribution
+seems almost uniform in its distribution.
 
 # Univariate Analysis
 
