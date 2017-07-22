@@ -255,7 +255,7 @@ ggplot(data = white.wine.df, aes(x = quality)) +
 
 The quality ratings are uniformly distributed around 6 (the mode).
 
-### Comparing the best, middle, and worst wines
+### More about the best, middle, and worst wines
 Wine ratings were made on a scale of 0 to 10, with 0 being the worst. In this
 data, wines ranged from 3 to 9. I divided the ratings as follows:  
 * Worst: wines rated 3, 4  
@@ -281,6 +281,67 @@ print(paste("Worst rated wines:",
             count(white.wine.df$quality.category == "Worst")))
 ```
 
+
+# Univariate Analysis
+
+### What is the structure of your dataset?
+This data has 4898 observations (wines) with 13 features (variables). These 
+features are "X", "fixed.acidity", "volatile.acidity", "citric.acid", 
+"residual.sugar", "chlorides", "free.sulfur.dioxide", "total.sulfur.dioxide", 
+"density", "pH", "sulphates", "alcohol", and "quality".
+
+Most of the variables are numerical, except for "quality". Although it consists
+of numbers, the numbers represent rank rather than being numbers in the strict 
+mathematical sense. When I loaded the data, R interpreted it as a numerical 
+vector, so I purposely changed it to a factor to properly reflect what it 
+stands for.
+
+### What is/are the main feature(s) of interest in your dataset?
+
+The main feature of my data set is "quality" which, as mentioned in the previous
+answer, represets a ranking: 0 to 10 with 0 being the worst quality rating and 
+10 being the best quality rating.
+
+The goal of this analysis is to determine which chemical properties affect the
+wine's rating (quality).
+
+### What other features in the dataset do you think will help support your \
+investigation into your feature(s) of interest?
+
+Because we want to know which chemical properties affect quality, a feature's 
+importance will be determined relative to its effect on quality.
+
+So far, a few features stand out: alchohol content, chloride content, free 
+sulfur dioxide, and volatile acidity.
+
+### Did you create any new variables from existing variables in the dataset?
+
+Yes. I created a "quality.category" (factor) variable using the "quality" 
+variable. This factor has three levels: "Worst", "Middle", and "Best". If a 
+wine was rated poorly (0-3), its quality.category value is "Worst". A rating 
+of 5-7 corresponds to "Middle". A rating of 8-10 represents "Best".
+
+### Of the features you investigated, were there any unusual distributions? \
+Did you perform any operations on the data to tidy, adjust, or change the form \
+of the data? If so, why did you do this?
+
+The histogram of chloride content had a long tail with what appeared to be many 
+data points along its length. I did a log transformation along its x-axis to 
+see if there really were a good amount of data points in the tail. After the 
+transformation, I found that the tail was less significant than I had 
+originally thought.
+
+***
+
+# Bivariate Plots Section
+
+> **Tip**: Based on what you saw in the univariate plots, what relationships
+between variables might be interesting to look at in this section? Don't limit
+yourself to relationships between a main output feature and one of the
+supporting variables. Try to look at relationships between supporting variables
+as well.
+
+### Relationships between quality and other chemical properties
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Boxplot theme
 boxplot.theme <- theme(panel.background = element_rect(fill="gray90", color="gray90"),
@@ -398,67 +459,7 @@ some information to corroborate this observation:
 [Peer reviewed paper](http://www.scielo.br/scielo.php?script=sci_arttext&pid=S0101-20612015000100095)  
 [Blog post](http://wineoscope.com/2015/10/02/when-a-wine-is-salty-and-why-it-shouldnt-be/)
 
-
-# Univariate Analysis
-
-> **Tip**: Now that you've completed your univariate explorations, it's time to
-reflect on and summarize what you've found. Use the questions below to help you
-gather your observations and add your own if you have other thoughts!
-
-### What is the structure of your dataset?
-This data has 4898 observations (wines) with 13 features (variables). These 
-features are "X", "fixed.acidity", "volatile.acidity", "citric.acid", 
-"residual.sugar", "chlorides", "free.sulfur.dioxide", "total.sulfur.dioxide", 
-"density", "pH", "sulphates", "alcohol", and "quality".
-
-Most of the variables are numerical, except for "quality". Although it consists
-of numbers, the numbers represent rank rather than being numbers in the strict 
-mathematical sense. When I loaded the data, R interpreted it as a numerical 
-vector, so I purposely changed it to a factor to properly reflect what it 
-stands for.
-
-### What is/are the main feature(s) of interest in your dataset?
-
-The main feature of my data set is "quality" which, as mentioned in the previous
-answer, represets a ranking: 0 to 10 with 0 being the worst quality rating and 
-10 being the best quality rating.
-
-The goal of this analysis is to determine which chemical properties affect the
-wine's rating (quality).
-
-### What other features in the dataset do you think will help support your \
-investigation into your feature(s) of interest?
-
-Because we want to know which chemical properties affect quality, a feature's 
-importance will be determined relative to its effect on quality.
-
-So far, a few features stand out: alchohol content, chloride content, free 
-sulfur dioxide, and volatile acidity.
-
-### Did you create any new variables from existing variables in the dataset?
-
-Yes. I created a "quality.category" (factor) variable using the "quality" 
-variable. This factor has three levels: "Worst", "Middle", and "Best". If a 
-wine was rated poorly (0-3), its quality.category value is "Worst". A rating 
-of 5-7 corresponds to "Middle". A rating of 8-10 represents "Best".
-
-### Of the features you investigated, were there any unusual distributions? \
-Did you perform any operations on the data to tidy, adjust, or change the form \
-of the data? If so, why did you do this?
-
-The histogram of chloride content had a long tail with what appeared to be many 
-data points along its length. I did a log transformation along its x-axis to 
-see if there really were a good amount of data points in the tail. After the 
-transformation, I found that the tail was less significant than I had 
-originally thought.
-
-# Bivariate Plots Section
-
-> **Tip**: Based on what you saw in the univariate plots, what relationships
-between variables might be interesting to look at in this section? Don't limit
-yourself to relationships between a main output feature and one of the
-supporting variables. Try to look at relationships between supporting variables
-as well.
+### Relationships between chemical properties
 
 ```{r echo=FALSE, Bivariate_Plots}
 
