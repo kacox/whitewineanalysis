@@ -480,7 +480,7 @@ be negative relationships between `quality` and `chlorides` as well as
 seems unclear. All of these will be explored further below.
 
 __Random features subset__
-```{r, message=FALSE, warning=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 random.subsetted.data <- subset(white.wine.df, !is.na(white.wine.df), 
                                  select = c(sulphates, pH, 
                                             total.sulfur.dioxide, 
@@ -500,8 +500,123 @@ variables.
 No new relationships involving `quality` are obvious.
 
 ### Relationships amongst chemical properties
-Continuation of above findings between different pairs of chemical properties 
-(based on correlation coefficient findings).
+Taking a close look at above findings between different pairs of chemical 
+properties (based on correlation coefficient findings).
+
+```{r, message=FALSE, warning=FALSE}
+scatterplot.theme <- theme(panel.background = element_rect(fill="white", 
+                                                       color="white"),
+        panel.grid.major.y = element_line(color = "gray70"),
+        panel.grid.major.x = element_line(color = "gray70"),
+        panel.grid.minor.x = element_blank(), 
+        plot.title = element_text(size=18, hjust=0.5),
+        legend.title = element_blank())
+```
+
+
+__pH and Fixed Acidity__  
+[With 4 "far out" outliers eliminated](https://en.wikipedia.org/wiki/Outlier#Tukey.27s_test)
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+fa.iqr <- quantile(white.wine.df$fixed.acidity, 0.75) - quantile(white.wine.df$fixed.acidity , 0.25)
+fa.no.outliers <- subset(white.wine.df, white.wine.df$fixed.acidity < 
+                       (quantile(white.wine.df$fixed.acidity, 0.75) + 3*fa.iqr))
+
+ggplot(data = fa.no.outliers, aes(x = fixed.acidity, y = pH)) +
+  geom_point(color = "dodgerblue4", alpha = 0.2, position = "jitter") +
+  geom_smooth(method = "lm", color = "navy") +
+  labs(x = "Fixed acidity (g / dm^3)", y = "pH", title = "pH by Fixed Acidity") + 
+  scatterplot.theme
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+print(paste("r =", cor(x = white.wine.df$fixed.acidity, 
+                       y = white.wine.df$pH, method = "pearson")))
+```
+
+__Total sulfur dioxide and free sulfur dioxide__  
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = white.wine.df, aes(x = free.sulfur.dioxide, y = total.sulfur.dioxide)) +
+  geom_point(color = "dodgerblue4", alpha = 0.1, position = "jitter") +
+  geom_smooth(method = "lm", color = "navy") +
+  coord_cartesian(xlim = c(0,150)) +
+  labs(x = "Free Sulfur Dioxide\n(mg / dm^3)", y = "Total Sulfur Dioxide\n(mg / dm^3)", title = "Total vs. Free Sulfur Dioxide") + 
+  scatterplot.theme
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+print(paste("r =", cor(x = white.wine.df$free.sulfur.dioxide, 
+                       y = white.wine.df$total.sulfur.dioxide, 
+                       method = "pearson")))
+```
+
+__Density and residual sugar__  
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = white.wine.df, aes(x = residual.sugar, y = density)) +
+  geom_point(color = "dodgerblue4", alpha = 0.1, position = "jitter") +
+  geom_smooth(method = "lm", color = "navy") +
+  coord_cartesian(xlim = c(0, 35), ylim = c(0.985, 1.015)) +
+  labs(x = "Residual Sugar\n(g / dm^3)", y = "Density\n(g / cm^3)", 
+       title = "Density vs. Residual Sugar") + 
+  scatterplot.theme
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+print(paste("r =", cor(x = white.wine.df$residual.sugar, 
+                       y = white.wine.df$density, 
+                       method = "pearson")))
+```
+
+__Density vs. alcohol__  
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = white.wine.df, aes(x = alcohol, y = density)) +
+  geom_point(color = "dodgerblue4", alpha = 0.1, position = "jitter") +
+  geom_smooth(method = "lm", color = "navy") + 
+  coord_cartesian(ylim = c(0.985, 1.015)) + 
+  labs(x = "Alcohol\n(% by volume)", y = "Density\n(g / cm^3)", 
+       title = "Density vs. Alcohol") + 
+  scatterplot.theme
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+print(paste("r =", cor(x = white.wine.df$alcohol, 
+                       y = white.wine.df$density, 
+                       method = "pearson")))
+```
+
+__Alcohol vs. residual sugar__  
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = white.wine.df, aes(x = residual.sugar, y = alcohol)) +
+  geom_point(color = "dodgerblue4", alpha = 0.1, position = "jitter") +
+  geom_smooth(method = "lm", color = "navy") + 
+  coord_cartesian(xlim = c(0, 35), ylim = c(7, 14)) + 
+  labs(y = "Alcohol\n(% by volume)", x = "Residual Sugar\n(g / dm^3)", 
+       title = "Alcohol vs. Residual Sugar") + 
+  scatterplot.theme
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+print(paste("r =", cor(x = white.wine.df$residual.sugar, 
+                       y = white.wine.df$alcohol, 
+                       method = "pearson")))
+```
+
+__Density and Total Sulfur Dioxide__  
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = white.wine.df, aes(x = total.sulfur.dioxide, y = density)) +
+  geom_point(color = "dodgerblue4", alpha = 0.1, position = "jitter") +
+  geom_smooth(method = "lm", color = "navy") + 
+  coord_cartesian(ylim = c(0.985, 1.015)) + 
+  labs(x = "Total Sulfur Dioxide\n(mg / dm^3)", y = "Density\n(g / cm^3)", 
+       title = "Density vs. Total Sulfur Dioxide") + 
+  scatterplot.theme
+```
+
+```{r, message=FALSE, warning=FALSE}
+print(paste("r =", cor(x = white.wine.df$total.sulfur.dioxide, 
+                       y = white.wine.df$density, 
+                       method = "pearson")))
+```
+
 
 ### Relationships between quality and other chemical properties
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
