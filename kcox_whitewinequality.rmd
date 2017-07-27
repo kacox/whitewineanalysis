@@ -611,7 +611,7 @@ ggplot(data = white.wine.df, aes(x = total.sulfur.dioxide, y = density)) +
   scatterplot.theme
 ```
 
-```{r, message=FALSE, warning=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 print(paste("r =", cor(x = white.wine.df$total.sulfur.dioxide, 
                        y = white.wine.df$density, 
                        method = "pearson")))
@@ -642,7 +642,7 @@ taste."
 ggplot(data = white.wine.df, aes(x = quality.category, y = volatile.acidity)) +
   geom_boxplot(aes(fill = quality.category)) +
   coord_flip() +
-  labs(x = "Quality Category", y = "Volatile Acidity (acetic acid; g/dm^3)",
+  labs(x = "Quality Category", y = "Volatile Acidity\n(g/dm^3)",
        title = "Volatile Acidity by Quality") +
   boxplot.colors +
   boxplot.theme +
@@ -650,8 +650,6 @@ ggplot(data = white.wine.df, aes(x = quality.category, y = volatile.acidity)) +
 ```
 
 It seems that poorly rated wines tend to have higher volatile acidity.
-
-??ANOVA HERE??
 
 __pH:__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
@@ -667,8 +665,6 @@ ggplot(data = white.wine.df, aes(x = quality.category, y = pH)) +
 Better wines appear to have a (relatively) higher pH, with the middle rated
 wines having a lot of variability.
 
-??ANOVA HERE??
-
 __Free sulfur dioxide:__  
 Another note from the text accompanying the data set: "total sulfur dioxide: 
 amount of free and bound forms of S02; in low  concentrations, SO2 is mostly 
@@ -681,8 +677,8 @@ least 49.9 mg/dm^3 to be detectable.
 ggplot(data = white.wine.df, aes(x = quality.category, 
                                  y = free.sulfur.dioxide)) +
   geom_boxplot(aes(fill = quality.category)) +
-  coord_flip() +
-  labs(x = "Quality Category", y = "Free Sulfur Dioxide", 
+  coord_flip(ylim = c(0, 150)) +
+  labs(x = "Quality Category", y = "Free Sulfur Dioxide\n(mg / dm^3)", 
        title = "Free Sulfur Dioxide by Quality") +
   stat_summary(fun.y = mean, geom = "point", shape = 4) +
   boxplot.colors +
@@ -694,26 +690,22 @@ in the better rated wines; however there is more variability in the worst
 wines. Note that the wine with the highest free sulfur dioxide is in the
 worst category.
 
-__Residual sugar:__  
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(data = white.wine.df, aes(x = quality.category, y = residual.sugar)) +
-  geom_boxplot(aes(fill = quality.category)) +
-  coord_flip(ylim = c(0, 30)) +
-  labs(x = "Quality Category", y = "Residual sugar (g/dm^3)", 
-       title = "Residual Sugar by Quality") +
-  stat_summary(fun.y = mean, geom = "point", shape = 4) +
-  boxplot.colors +
-  boxplot.theme
-```
+I did a little searching to make sense of this observation. Sulfur dioxide is 
+an important preservative and stabilizer used world-wide in wine making. It 
+then makes sense that worse quality wines may not be well preserved -- 
+developing off flavors, etc. They may also be rated worse if too much sulfur 
+dioxide is used: too much SO2 can create an irritating or burning sensation in 
+the nasal passageway. Obviously, SO2 is not the only factor affecting quality. 
+A poorly made wine, no matter how well preserved, will still get bad ratings.
 
-There doesn't appear to be a correlation at first glance.
+[Sulfur dioxide management](http://extension.psu.edu/food/enology/wine-production/wine-made-easy-fact-sheets/sulfur-dioxide-management)
 
 __Alcohol (ABV - % by volume):__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(data = white.wine.df, aes(x = quality.category, y = alcohol)) +
   geom_boxplot(aes(fill = quality.category)) +
   coord_flip() +
-  labs(x = "Quality Category", y = "Alcohol (ABV)", 
+  labs(x = "Quality Category", y = "Alcohol\n(ABV)", 
        title = "ABV by Quality") +
   stat_summary(fun.y = mean, geom = "point", shape = 4) +
   boxplot.colors +
@@ -722,12 +714,28 @@ ggplot(data = white.wine.df, aes(x = quality.category, y = alcohol)) +
 
 The better rated wines seem to generally have higher alcohol content.
 
+__Density:__  
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = white.wine.df, aes(x = quality.category, y = density)) +
+  geom_boxplot(aes(fill = quality.category)) +
+  coord_flip(ylim = c(0.985, 1.015)) +
+  labs(x = "Quality Category", y = "Density\n(g/cm^3)", 
+       title = "Density by Quality") +
+  stat_summary(fun.y = mean, geom = "point", shape = 4) +
+  boxplot.colors +
+  boxplot.theme
+```
+
+Better rated wines tend to have a lower density. This is consistent with the 
+previous boxplot that showed wines with higher alcohol content typically had 
+better ratings. (Reminder: alcohol lowers the density of the wine.)
+
 __Chlorides:__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(data = white.wine.df, aes(x = quality.category, y = chlorides)) +
   geom_boxplot(aes(fill = quality.category)) +
   coord_flip(ylim = c(0, 0.15)) +
-  labs(x = "Quality Category", y = "Sodium chloride (g / dm^3)", 
+  labs(x = "Quality Category", y = "Sodium chloride\n(g / dm^3)", 
        title = "Sodium Chloride Content by Quality") +
   stat_summary(fun.y = mean, geom = "point", shape = 4) +
   boxplot.colors +
@@ -738,12 +746,6 @@ The worse rated wines tend to have higher sodium chloride content. I found
 some information to corroborate this observation:  
 [Peer reviewed paper](http://www.scielo.br/scielo.php?script=sci_arttext&pid=S0101-20612015000100095)  
 [Blog post](http://wineoscope.com/2015/10/02/when-a-wine-is-salty-and-why-it-shouldnt-be/)
-
-### Relationships between chemical properties
-
-```{r echo=FALSE, Bivariate_Plots}
-
-```
 
 # Bivariate Analysis
 
