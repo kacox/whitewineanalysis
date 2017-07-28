@@ -770,10 +770,148 @@ The worse rated wines tend to have higher sodium chloride content.
 investigation. How did the feature(s) of interest vary with other features in \
 the dataset?
 
+I observed several relationships involving the main feature (`quality`). Poorly 
+rated wines ("Worst" `quality.category`) tended to have higher 
+`volatile.acidity`. In the text accompanying the data set, there is 
+information on the variables contained in the data. Of note is this: "volatile 
+acidity: the amount of acetic acid in wine, which at too high of levels can 
+lead to an unpleasant, vinegar taste." This would explain why at higher values 
+these wines would end up in the worst category. Perhaps "Middle" and "Best" 
+wines do not hit the threshold of "too high of levels", thereby not 
+experiencing any negative impact from `volatile.acidity`.
+
+Wines with a higher `pH` value tended to have a better `quality` rating. This 
+holds true for all three `quality.category` subsets ("Worst", "Middle", 
+"Best"). I do _not_ believe this is because wines with higher 
+`volatile.acidity` generally have worse ratings. In the __Acidity subset__ 
+plot matrix above the __pH__ boxplot I go into a discussion about how 
+`volatile.acidity` has a low impact on final `pH` (how, in fact, it is 
+`fixed.acidity` that largely determines final `pH`). Maybe it is a tasting 
+preference to have slightly less acidic wine (they are all acidic 
+nonetheless).
+
+A relationship also appears to exist between `quality` and 
+`free.sulfur.dioxide`. Another note from the text accompanying the data set 
+states: "total sulfur dioxide: amount of free and bound forms of S02; in low 
+concentrations, SO[2] is mostly undetectable in wine, but at free SO[2] 
+concentrations over 50 ppm, SO[2] becomes evident in the nose and taste 
+of wine"
+
+Somewhat counterintuitively, The median free sulfur dioxide is lower in the 
+poorly rated wines; however, there is a lot variability amongst these wines. 
+Note that the wine with the highest free sulfur dioxide is in the worst 
+category. A closer examination reveals that at the cited 50 ppm, that 
+would mean free sulfur dioxide would have to be at least 49.9 mg/dm^3 to be 
+detectable. Most wines (in all categories) are less than this threshold. So 
+for the most part, too much free SO2 likely isn't a factor unless it is at 
+unreasonably high amounts. So what else could explain this trend?
+
+I did a little searching to make sense of this observation ([Sulfur dioxide management](http://extension.psu.edu/food/enology/wine-production/wine-made-easy-fact-sheets/sulfur-dioxide-management)). 
+Sulfur dioxide is 
+an important _preservative_ and _stabilizer_ used world-wide in wine making. It 
+makes sense then that worse quality wines may not be well preserved -- 
+developing off flavors, etc. Obviously, SO2 is not the only factor affecting 
+quality. A poorly made wine, no matter how well preserved, will still get bad 
+ratings.
+
+`quality` ratings tend to be higher when `alcohol` is higher. This appears to 
+be a preference. According to an article in the 
+[Scientific American](https://www.scientificamerican.com/article/wine-becomes-more-like-whisky-as-alcohol-content-gets-high/:)  
+> The recent surge in wine's punch [alcohol content] is largely a result, 
+scientists say, of a fashion for deeply colored wines with fewer “green” 
+qualities and more bright, ripe, fruity flavors. As New World wines in this 
+style have drawn more fans, even European winemakers accustomed to making 
+lower-alcohol wines in less ripe styles are beginning to follow suit. But 
+producing wines with those flavors means letting grapes hang longer on the 
+vine, and with longer hang times comes bigger sugar. The more sugar the wine 
+yeast _S. cerevisiae_ has to work with, the more alcohol it will make.
+
+Along similiar lines `quality` tends to be higher in wines with lower 
+`density`. This is consistent with the previous relationship that showed 
+wines with higher alcohol content typically had better ratings. (Reminder: 
+alcohol lowers the density of the wine, which is mostly water.)
+
+Finally, a negative trend seems to exist between `quality` and `chlorides`. 
+More chlorides seems to negatively impact quality. I found some information to 
+corroborate this observation:  
+[Peer reviewed paper](http://www.scielo.br/scielo.php?script=sci_arttext&pid=S0101-20612015000100095)  
+[Blog post](http://wineoscope.com/2015/10/02/when-a-wine-is-salty-and-why-it-shouldnt-be/)
+
 ### Did you observe any interesting relationships between the other features \
 (not the main feature(s) of interest)?
 
+Yes, there were several.
+
+`pH` and `fixed.acidity` had a modest negative correlation (r = -0.4259). The 
+relationship suggests that the higher the `fixed.acidity`, the lower the `pH`. 
+That is not an implausable correlation. The more acid in a solution, all else 
+equal, the lower the pH of that solution will be.
+
+With that in mind, there is more than one kind of acid in wine that 
+contributes to the final pH of a wine. `fixed.acidity`  in this data set 
+represents tartaric acid, one of the main 
+[acid constituents in wine](http://waterhouse.ucdavis.edu/whats-in-wine/fixed-acidity), 
+potentially explaining why we have a noticable trend. But because it is not 
+the only acid present, a stronger relationship is not observed.
+
+At first glance it may seem curious that there isn't even a modest 
+relationship between `volatile.acidity` (acetic acid content) and `pH`. It may 
+also seem strange that no significant relationship appears to exist between 
+`citric.acid` and `pH`.
+
+If you look at the measurements of all three acids, however, the above patterns 
+actually do make sense. All of the acids are measured in grams per decimeter 
+cubed.  
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+cat("Fixed acidity summary", "\n")
+print(summary(white.wine.df$fixed.acidity))
+
+cat("\n", "Volatile acidity summary", "\n")
+print(summary(white.wine.df$volatile.acidity))
+
+cat("\n", "Citric acid summary", "\n")
+print(summary(white.wine.df$citric.acid))
+```
+
+Fixed acidity quantities are much higher than either volatile acidity or citric 
+acid contents, and they all have comprable pK[a] ranges (a measure of acidity), 
+meaning that fixed acidity (tartaric acid) has greater influence on pH.
+
+`total.sulfur.dioxide` and `free.sulfur.dioxide` have a positive correlation 
+(r = 0.6155). This could suggest that `free.sulfur.dioxide` is the majority 
+contributor to `total.sulfur.dioxide` (in this data set, 
+`total.sulfur.dioxide` is defined as the "amount of free and bound forms of 
+S02").
+
+A strong positive relationship exists between `density` and `residual.sugar` 
+(r = 0.8390). This makes sense because dissolved solids increase the density 
+of aqueous solvents (wine is mostly water, whose density is 1 g / cm^3).
+
+A strong negative relationship exists between `density` and `alcohol` 
+(r = -0.7801). This makes sense for the opposite reason. Ethanol has a 
+density of 0.7893 g / cm^3, so its presence would decrease the density of 
+a wine.
+
+`alcohol` and `residual.sugar` have a moderate negative correlation (r = 
+-0.4506). Because alcohol is generated by the fermentation of sugar, if 
+fermentation is limited by the winemaker more sugar and less alcohol would 
+be in the final wine, all else equal. I believe a stronger relationship is 
+not seen because the amount of sugar at the beginning of fermentation is 
+different amongst wines. This depends on the grapes' qualities and if sugar is 
+added to the starting product.
+
+`density` and `total.sulfur.dioxide` share a moderate positive correlation 
+(r = 0.5299). I am unsure why this correlation exists since the density of 
+sulfur dioxide is lower than water (0.00293 g/cm^3).
+
 ### What was the strongest relationship you found?
+
+The strongest relationship amongst numerical variables was between `density` 
+and `residual.sugar` (r = 0.8390).
+
+I do not have a quantification for the strongest relationship between 
+`quality` and another feature; however, visually the relationship between
+`quality` and `alcohol` seems to be the most dramatic.
 
 # Multivariate Plots Section
 
