@@ -914,16 +914,43 @@ I do not have a quantification for the strongest relationship between
 `quality` and `alcohol` seems to be the most dramatic.
 
 # Multivariate Plots Section
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = white.wine.df, aes(x = (4 * round(density / 4, digits = 4)), 
+                                 y = alcohol)) + 
+  geom_line(aes(color = quality.category), stat = "summary", fun.y = median, size = 1) + 
+  coord_cartesian(x = c(0.985, 1.010)) +
+  labs(title = "Alcohol vs. Density by Quality Category\n(Binned)", 
+       x = "Density (Binned)", y = "Alcohol") + 
+  theme(panel.background = element_rect(fill="white", color="white"),
+        panel.grid.major.y = element_line(color = "gray70"),
+        panel.grid.major.x = element_line(color = "gray70"),
+        panel.grid.minor.x = element_blank(), 
+        plot.title = element_text(size=18, hjust=0.5)) + 
+  scale_colour_brewer(palette = "Set1", direction = -1)
+```
 
-> **Tip**: Now it's time to put everything together. Based on what you found in
-the bivariate plots section, create a few multivariate plots to investigate
-more complex interactions between variables. Make sure that the plots that you
-create here are justified by the plots you explored in the previous section. If
-you plan on creating any mathematical models, this is the section where you
-will do that.
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(x = (5 * round(pH / 5, digits = 2)), y = volatile.acidity), data = white.wine.df) + 
+  geom_line(aes(color = quality), stat = "summary", fun.y = median, size = 1) +
+  labs(title = "Volatile acidity vs. pH by Quality Category\n(Binned)", 
+       x = "pH (Binned)", y = "Volatile Acidity") + 
+  theme(panel.background = element_rect(fill="white", color="white"),
+        panel.grid.major.y = element_line(color = "gray70"),
+        panel.grid.major.x = element_line(color = "gray70"),
+        panel.grid.minor.x = element_blank(), 
+        plot.title = element_text(size=18, hjust=0.5))
+```
 
-```{r echo=FALSE, Multivariate_Plots}
-
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(x = (2 * round(pH / 2, digits = 2)), y = volatile.acidity), data = white.wine.df) + 
+  geom_point(aes(color = quality)) +
+  labs(title = "Volatile acidity vs. pH by Quality Category\n(Binned)", 
+       x = "pH (Binned)", y = "Volatile Acidity") + 
+  theme(panel.background = element_rect(fill="white", color="white"),
+        panel.grid.major.y = element_line(color = "gray70"),
+        panel.grid.major.x = element_line(color = "gray70"),
+        panel.grid.minor.x = element_blank(), 
+        plot.title = element_text(size=18, hjust=0.5))
 ```
 
 # Multivariate Analysis
