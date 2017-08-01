@@ -917,7 +917,8 @@ I do not have a quantification for the strongest relationship between
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(data = white.wine.df, aes(x = (4 * round(density / 4, digits = 4)), 
                                  y = alcohol)) + 
-  geom_line(aes(color = quality.category), stat = "summary", fun.y = median, size = 1) + 
+  geom_line(aes(color = quality.category), stat = "summary", fun.y = median, 
+            size = 1) + 
   coord_cartesian(x = c(0.985, 1.010)) +
   labs(title = "Alcohol vs. Density by Quality Category\n(Binned)", 
        x = "Density (Binned)", y = "Alcohol") + 
@@ -930,7 +931,8 @@ ggplot(data = white.wine.df, aes(x = (4 * round(density / 4, digits = 4)),
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(aes(x = (5 * round(pH / 5, digits = 2)), y = volatile.acidity), data = white.wine.df) + 
+ggplot(aes(x = (5 * round(pH / 5, digits = 2)), y = volatile.acidity), 
+       data = white.wine.df) + 
   geom_line(aes(color = quality), stat = "summary", fun.y = median, size = 1) +
   labs(title = "Volatile acidity vs. pH by Quality Category\n(Binned)", 
        x = "pH (Binned)", y = "Volatile Acidity") + 
@@ -942,7 +944,8 @@ ggplot(aes(x = (5 * round(pH / 5, digits = 2)), y = volatile.acidity), data = wh
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(aes(x = (2 * round(pH / 2, digits = 2)), y = volatile.acidity), data = white.wine.df) + 
+ggplot(aes(x = (2 * round(pH / 2, digits = 2)), y = volatile.acidity), 
+       data = white.wine.df) + 
   geom_point(aes(color = quality)) +
   labs(title = "Volatile acidity vs. pH by Quality Category\n(Binned)", 
        x = "pH (Binned)", y = "Volatile Acidity") + 
@@ -959,10 +962,38 @@ ggplot(aes(x = (2 * round(pH / 2, digits = 2)), y = volatile.acidity), data = wh
 investigation. Were there features that strengthened each other in terms of \
 looking at your feature(s) of interest?
 
+The first multivariate plot is of `alcohol`,`density`, and `quality.category`. 
+As seen before, `alcohol` and `density` are strongly related to one another: 
+regardless of a wine's category, `alcohol` and `density` are negatively 
+correlated. Also from earlier exploration, the relationship between 
+`quality.category` and `alcohol` still holds true. The "Best" category wines 
+tend to have higher `alcohol` than their peers at the same `density` when 
+`density` is less than 0.9955 g/cm^3.
+
+I also tried plotting `volatile.acidity`, `pH` and `quality` two different 
+ways: a line plot and a scatterplot form. Each brought different insights.
+
+The line plot showed that the worse quality wine (ratings 3 and 4) tended 
+toward higher `volatile.acidity`, regardless of pH (though there were some 
+spikes). The middle rated wines (5, 6, 7) can be seen closer to the bottom 
+(lower `volatile.acidity`) and also spanning the largest pH range. The highest 
+rating category in this data set (9) spans the shortest pH range.
+
+The scatterplot makes it unmistakably clear that the middle rated wines are 
+the most abundant and span across the widest pH scale. It is also possible to 
+see that wines with higher `volatile.acidity` are a mix of the worst rated 
+wines and middle rated wines; however, worse rated wines tend to appear with 
+higher rather than lower `volatile.acidity`.
+
 ### Were there any interesting or surprising interactions between features?
+
+I did not see anything new that was not already seen in the bivariate 
+analysis.
 
 ### OPTIONAL: Did you create any models with your dataset? Discuss the \
 strengths and limitations of your model.
+
+N/A
 
 ------
 
