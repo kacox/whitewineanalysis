@@ -1009,26 +1009,86 @@ make sure you justify why you chose each plot by describing what it shows.
 
 ### Plot One
 ```{r echo=FALSE, Plot_One}
+fa.iqr <- quantile(white.wine.df$fixed.acidity, 0.75) - quantile(white.wine.df$fixed.acidity , 0.25)
+fa.no.outliers <- subset(white.wine.df, white.wine.df$fixed.acidity < 
+                       (quantile(white.wine.df$fixed.acidity, 0.75) + 3*fa.iqr))
 
+ggplot(data = fa.no.outliers, aes(x = fixed.acidity, y = pH)) +
+  geom_point(color = "dodgerblue4", alpha = 0.2, position = "jitter") +
+  geom_smooth(method = "lm", color = "navy") +
+  labs(x = "Fixed acidity (g / dm^3)", y = "pH", title = "pH by Fixed Acidity") + 
+  scatterplot.theme
 ```
 
 ### Description One
+This scatterplot depicts the relationship between `pH` and `fixed.acidity` 
+(r = -0.4259). Although it is only a moderate relationship, the 
+inquiry that followed was interesting because I ended up learning about the 
+acid composition of wine.
 
+While it is not surprising that greater 
+`fixed.acidity` correlates to lower pH, the imperfect relationship suggested 
+that something more was at play. As discussed in the __Bivarate Analysis__ 
+section, `fixed.acidity` only represents one of the several acids present in 
+wine (tartaric acid). After some brief investigation, it was clear that other 
+acids, like malic acid (not measured in this data set), also contribute to 
+the final pH of a wine. When I checked `volatile.acidity` (acetic acid) and 
+`citric.acid` for correlation to pH, the relationships were not strong, meaning 
+that there was much less of either acid present compared to tartaric acid. 
 
 ### Plot Two
 ```{r echo=FALSE, Plot_Two}
-
+ggplot(data = white.wine.df, aes(x = quality.category, y = alcohol)) +
+  geom_boxplot(aes(fill = quality.category)) +
+  coord_flip() +
+  labs(x = "Quality Category", y = "Alcohol\n(% by Volume)", 
+       title = "Alcohol Content by Quality") +
+  stat_summary(fun.y = mean, geom = "point", shape = 4) +
+  boxplot.colors +
+  boxplot.theme + 
+  guides(fill = guide_legend(reverse=TRUE))
 ```
 
 ### Description Two
+This boxplot shows alcohol content of wines by quality category. I elected to 
+group the wines into "Worst", "Middle", and "Best" because having all 
+possible quality categories (3 to 9 in this data set) made the plot messy 
+looking.
 
+This plot was particularly interesting not simply because it showed a clear 
+preference for higher alcohol wines, but because it revealed a market trend. 
+As discussed in the __Bivarate Analysis__ section, New World wines with 
+bolder, "riper" flavors are in vogue, which consequently come with higher 
+alcohol content.
 
 ### Plot Three
 ```{r echo=FALSE, Plot_Three}
-
+ggplot(aes(x = (5 * round(pH / 5, digits = 2)), y = volatile.acidity), 
+       data = white.wine.df) + 
+  geom_line(aes(color = quality), stat = "summary", fun.y = median, size = 1) +
+  labs(title = "Volatile acidity vs. pH by Quality Category\n(Binned)", 
+       x = "pH (Binned)", y = "Volatile Acidity") + 
+  theme(panel.background = element_rect(fill="white", color="white"),
+        panel.grid.major.y = element_line(color = "gray70"),
+        panel.grid.major.x = element_line(color = "gray70"),
+        panel.grid.minor.x = element_blank(), 
+        plot.title = element_text(size=18, hjust=0.5))
 ```
 
 ### Description Three
+Although this line plot may seem somewhat noisy, it actually contains a lot 
+of information of use. The finer details are discussed in the 
+__Multivariate Analysis__ section, but overall it shows a slight trend in 
+quality and volatile acidity. It also shows that no significant relationship 
+exists between pH and volatile acidity (which reinforces previous findings).
+
+At a bigger picture level, this plot demonstrates that more is at work when 
+it comes to quality rating: there are peaks and valleys for the different 
+quality ratings, meaning some wines certainly buck the trend for 
+`volatile.acidity`. It also shows the diversity in pH for wines. These 
+observations reinforce my general impression that quality is influenced by 
+multiple chemical properties of wine; that no one property is the ultimate 
+dictator of quality.
 
 ------
 
