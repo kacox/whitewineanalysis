@@ -861,16 +861,16 @@ effect. Thereby explaining why we see a modest trend for
 `total.sulfur.dioxide` but not for `free.sulfur.dioxide`.
 
 `quality` ratings tend to be higher when `alcohol` is higher. This appears to 
-be a preference. According to an article in the 
-[Scientific American](https://www.scientificamerican.com/article/wine-becomes-more-like-whisky-as-alcohol-content-gets-high/):  
-> The recent surge in wine's punch [alcohol content] is largely a result, 
+be a preference. According to an article in the Scientific American (
+"Wine Becomes More Like Whisky as Alcohol Content Gets High"):  
+> "The recent surge in wine's punch [alcohol content] is largely a result, 
 scientists say, of a fashion for deeply colored wines with fewer “green” 
 qualities and more bright, ripe, fruity flavors. As New World wines in this 
 style have drawn more fans, even European winemakers accustomed to making 
 lower-alcohol wines in less ripe styles are beginning to follow suit. But 
 producing wines with those flavors means letting grapes hang longer on the 
 vine, and with longer hang times comes bigger sugar. The more sugar the wine 
-yeast _S. cerevisiae_ has to work with, the more alcohol it will make.
+yeast _S. cerevisiae_ has to work with, the more alcohol it will make."
 
 Along similiar lines `quality` tends to be higher in wines with lower 
 `density`. This is consistent with the previous relationship that showed 
@@ -879,9 +879,7 @@ alcohol lowers the density of the wine, which is mostly water.)
 
 Finally, a negative trend seems to exist between `quality` and `chlorides`. 
 More chlorides seems to negatively impact quality. I found some information to 
-corroborate this observation:  
-[Peer reviewed paper](http://www.scielo.br/scielo.php?script=sci_arttext&pid=S0101-20612015000100095)  
-[Blog post](http://wineoscope.com/2015/10/02/when-a-wine-is-salty-and-why-it-shouldnt-be/)
+corroborate this observation (see resources text file).
 
 ### Did you observe any interesting relationships between the other features \
 (not the main feature(s) of interest)?
@@ -895,11 +893,9 @@ equal, the lower the pH of that solution will be.
 
 With that in mind, there is more than one kind of acid in wine that 
 contributes to the final pH of a wine. `fixed.acidity`  in this data set 
-represents tartaric acid, one of the main 
-[acid constituents in wine](http://waterhouse.ucdavis.edu/whats-in-wine/fixed-acidity), 
+represents tartaric acid, one of the main acid constituents in wine, 
 potentially explaining why we have a noticable trend. But because it is 
-[not the only acid present](https://en.wikipedia.org/wiki/Acids_in_wine), a 
-stronger relationship is not observed.
+not the only acid present, a stronger relationship is not observed.
 
 At first glance it may seem curious that there isn't even a modest 
 relationship between `volatile.acidity` (acetic acid content) and `pH`. It may 
