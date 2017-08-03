@@ -789,10 +789,10 @@ experiencing any negative impact from `volatile.acidity`.
 Wines with a higher `pH` value tended to have a better `quality` rating. This 
 holds true for all three `quality.category` subsets ("Worst", "Middle", 
 "Best"). I do _not_ believe this is because wines with higher 
-`volatile.acidity` generally have worse ratings. In the __Acidity subset__ 
-plot matrix above the __pH__ boxplot I go into a discussion about how 
-`volatile.acidity` has a low impact on final `pH` (how, in fact, it is 
-`fixed.acidity` that largely determines final `pH`). Maybe it is a tasting 
+`volatile.acidity` generally have worse ratings. Below (next question) I go 
+into a discussion about how `volatile.acidity` has a low impact on final `pH` 
+(how, in fact, it is `fixed.acidity` that largely determines final `pH`). 
+Maybe it is a tasting 
 preference to have slightly less acidic wine (they are all acidic 
 nonetheless).
 
@@ -857,8 +857,9 @@ With that in mind, there is more than one kind of acid in wine that
 contributes to the final pH of a wine. `fixed.acidity`  in this data set 
 represents tartaric acid, one of the main 
 [acid constituents in wine](http://waterhouse.ucdavis.edu/whats-in-wine/fixed-acidity), 
-potentially explaining why we have a noticable trend. But because it is not 
-the only acid present, a stronger relationship is not observed.
+potentially explaining why we have a noticable trend. But because it is 
+[not the only acid present](https://en.wikipedia.org/wiki/Acids_in_wine), a 
+stronger relationship is not observed.
 
 At first glance it may seem curious that there isn't even a modest 
 relationship between `volatile.acidity` (acetic acid content) and `pH`. It may 
