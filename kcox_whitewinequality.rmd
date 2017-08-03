@@ -677,9 +677,12 @@ subset(white.wine.df,
                                                   "quality.category")]
 ```
 
-The median `free.sulfur.dioxide` is lower in the poorly rated wines; however, 
-there is a lot variability amongst these wines. Note that the wine with the 
-highest `free.sulfur.dioxide` (289) is in the worst category.
+The median `free.sulfur.dioxide` is lower in the poorly rated wines when 
+considered as a group (with respect to `quality.category`); however, 
+there is a lot variability amongst these wines. Overall, when considering each 
+`quality` rating separately, though, the pattern seems dubious. Note that the 
+wine with the highest `free.sulfur.dioxide` (289) is in the worst category. 
+This may distort the "Worst" category as a group.
 
 __Total sulfur dioxide:__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
@@ -708,6 +711,9 @@ cat("Median Total Sulfur Dioxide for 'Best' wines:",
                                white.wine.df$quality.category == 
                                  "Worst")$free.sulfur.dioxide)))
 ```
+
+There appears to be a slight positive trend between `total.sulfur.dioxide` and 
+`quality`.
 
 __Alcohol (ABV - % by volume):__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
@@ -824,29 +830,35 @@ Maybe it is a tasting
 preference to have slightly less acidic wine (they are all acidic 
 nonetheless).
 
-A relationship also appears to exist between `quality` and 
+No relationship appears to exist between `quality` and 
 `free.sulfur.dioxide`. Another note from the text accompanying the data set 
 states: "total sulfur dioxide: amount of free and bound forms of S02; in low 
 concentrations, SO[2] is mostly undetectable in wine, but at free SO[2] 
 concentrations over 50 ppm, SO[2] becomes evident in the nose and taste 
 of wine"
 
-Somewhat counterintuitively, The median free sulfur dioxide is lower in the 
-poorly rated wines; however, there is a lot variability amongst these wines. 
-Note that the wine with the highest free sulfur dioxide is in the worst 
-category. A closer examination reveals that at the cited 50 ppm, that 
-would mean free sulfur dioxide would have to be at least 49.9 mg/dm^3 to be 
-detectable. Most wines (in all categories) are less than this threshold. So 
-for the most part, too much free SO2 likely isn't a factor unless it is at 
-unreasonably high amounts. So what else could explain this trend?
+Somewhat counterintuitively, there doesn't seem to be much of a trend. A 
+closer examination reveals that at the cited 50 ppm, that would mean free 
+sulfur dioxide would have to be at least 49.9 mg/dm^3 to be detectable. Most 
+wines (for all ratings) are less than this threshold. So for the most part, 
+too much free SO2 likely isn't a factor unless it is at unreasonably high 
+amounts.
 
-I did a little searching to make sense of this observation ([Sulfur dioxide management](http://extension.psu.edu/food/enology/wine-production/wine-made-easy-fact-sheets/sulfur-dioxide-management)). 
-Sulfur dioxide is 
-an important _preservative_ and _stabilizer_ used world-wide in wine making. It 
-makes sense then that worse quality wines may not be well preserved -- 
-developing off flavors, etc. Obviously, SO2 is not the only factor affecting 
-quality. A poorly made wine, no matter how well preserved, will still get bad 
-ratings.
+For `quality` and `total.sulfur.dioxide`, however, there does appear to be a 
+modest trend. I did a little searching to make sense of this observation. 
+Sulfur dioxide is an important _preservative_ and _stabilizer_ used world-wide 
+in wine making. `total.sulfur.dioxide` is defined as the "amount of free and 
+bound forms of S02".
+
+In cases where the wine is highly oxidized and has ample amounts of 
+acetaldehyde (not good for wine quality), any added SO2 is quickly bound by 
+acetaldehyde and other chemical constituents. It becomes part of total SO2 
+but not part of free SO2. Bound SO2 does _not_ have antioxidant or 
+anti-microbial properties, but free SO2 does. Poorly made wines that 
+have oxidized require more SO2 to be added -- enough so that it spills 
+over into free SO2 at a level high enough to have the desired preserving 
+effect. Thereby explaining why we see a modest trend for 
+`total.sulfur.dioxide` but not for `free.sulfur.dioxide`.
 
 `quality` ratings tend to be higher when `alcohol` is higher. This appears to 
 be a preference. According to an article in the 
@@ -914,10 +926,8 @@ acidity), meaning that `fixed.acidity` (tartaric acid) has greater
 influence on pH.
 
 `total.sulfur.dioxide` and `free.sulfur.dioxide` have a positive correlation 
-(r = 0.6155). This could suggest that `free.sulfur.dioxide` is the majority 
-contributor to `total.sulfur.dioxide` (in this data set, 
-`total.sulfur.dioxide` is defined as the "amount of free and bound forms of 
-S02").
+(r = 0.6155). This makes sense given my previous explanation of their 
+relationship (see previous question).
 
 A strong positive relationship exists between `density` and `residual.sugar` 
 (r = 0.8390). This makes sense because dissolved solids increase the density 
@@ -1068,7 +1078,7 @@ that there was much less of either acid present compared to tartaric acid.
 
 ### Plot Two
 ```{r echo=FALSE, Plot_Two}
-ggplot(data = white.wine.df, aes(x = quality.category, y = alcohol)) +
+ggplot(data = white.wine.df, aes(x = quality, y = alcohol)) +
   geom_boxplot(aes(fill = quality.category)) +
   coord_flip() +
   labs(x = "Quality Category", y = "Alcohol\n(% by Volume)", 
@@ -1081,9 +1091,7 @@ ggplot(data = white.wine.df, aes(x = quality.category, y = alcohol)) +
 
 ### Description Two
 This boxplot shows alcohol content of wines by quality category. I elected to 
-group the wines into "Worst", "Middle", and "Best" because having all 
-possible quality categories (3 to 9 in this data set) made the plot messy 
-looking.
+group the wines into "Worst", "Middle", and "Best" for visualization purposes.
 
 This plot was particularly interesting not simply because it showed a clear 
 preference for higher alcohol wines, but because it revealed a market trend. 
@@ -1159,7 +1167,8 @@ In the future, once I have learned more about predictive modeling, I think
 building a model could be very interesting. It would be a great way to 
 test my present findings and also to get a better understanding of what people 
 look for in wines. Another thing that would interesting would be repeating 
-the experiment and adding more variable -- e.g. all the major acids like 
-malic, lactic, succinic acid, etc. Many of these have profound effects on 
+the experiment and adding more variables -- e.g. all the major acids like 
+malic, lactic, succinic acid, etc, as well as an oxidation marker of some 
+sort and acetaldehyde levels. Many of these have profound effects on 
 the sensory experience of wine. So we may be missing important information 
 if these are not included.
