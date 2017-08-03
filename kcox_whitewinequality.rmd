@@ -681,6 +681,34 @@ The median `free.sulfur.dioxide` is lower in the poorly rated wines; however,
 there is a lot variability amongst these wines. Note that the wine with the 
 highest `free.sulfur.dioxide` (289) is in the worst category.
 
+__Total sulfur dioxide:__  
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = white.wine.df, aes(x = quality, 
+                                 y = total.sulfur.dioxide)) +
+  geom_boxplot(aes(fill = quality.category)) +
+  coord_flip() +
+  labs(x = "Quality Category", y = "Total Sulfur Dioxide\n(mg / dm^3)", 
+       title = "Total Sulfur Dioxide by Quality") +
+  stat_summary(fun.y = mean, geom = "point", shape = 4) +
+  boxplot.colors +
+  boxplot.theme
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+cat("Median Total Sulfur Dioxide for 'Best' wines:", 
+    as.character(median(subset(white.wine.df,
+                               white.wine.df$quality.category == 
+                               "Best")$free.sulfur.dioxide)), 
+    "\nMedian Total Sulfur Dioxide for 'Middle' wines:", 
+    as.character(median(subset(white.wine.df, 
+                               white.wine.df$quality.category == 
+                                 "Middle")$free.sulfur.dioxide)), 
+    "\nMedian Total Sulfur Dioxide for 'Worst' wines:", 
+    as.character(median(subset(white.wine.df, 
+                               white.wine.df$quality.category == 
+                                 "Worst")$free.sulfur.dioxide)))
+```
+
 __Alcohol (ABV - % by volume):__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(data = white.wine.df, aes(x = quality, y = alcohol)) +
