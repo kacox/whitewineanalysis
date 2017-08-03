@@ -588,7 +588,7 @@ boxplot.colors <- scale_fill_manual(values=c("green3", "deepskyblue3", "red2"))
 
 __Volatile acidity:__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(data = white.wine.df, aes(x = quality.category, y = volatile.acidity)) +
+ggplot(data = white.wine.df, aes(x = quality, y = volatile.acidity)) +
   geom_boxplot(aes(fill = quality.category)) +
   coord_flip() +
   labs(x = "Quality Category", y = "Volatile Acidity\n(g/dm^3)",
@@ -617,7 +617,7 @@ It seems that poorly rated wines tend to have higher `volatile.acidity`.
 
 __pH:__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(data = white.wine.df, aes(x = quality.category, y = pH)) +
+ggplot(data = white.wine.df, aes(x = quality, y = pH)) +
   geom_boxplot(aes(fill = quality.category)) +
   coord_flip() +
   labs(x = "Quality Category", y = "pH", title = "pH by Quality") +
@@ -646,7 +646,7 @@ wines have a lot of variability.
 
 __Free sulfur dioxide:__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(data = white.wine.df, aes(x = quality.category, 
+ggplot(data = white.wine.df, aes(x = quality, 
                                  y = free.sulfur.dioxide)) +
   geom_boxplot(aes(fill = quality.category)) +
   coord_flip(ylim = c(0, 150)) +
@@ -683,7 +683,7 @@ highest `free.sulfur.dioxide` (289) is in the worst category.
 
 __Alcohol (ABV - % by volume):__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(data = white.wine.df, aes(x = quality.category, y = alcohol)) +
+ggplot(data = white.wine.df, aes(x = quality, y = alcohol)) +
   geom_boxplot(aes(fill = quality.category)) +
   coord_flip() +
   labs(x = "Quality Category", y = "Alcohol\n(ABV)", 
@@ -712,7 +712,7 @@ The better rated wines generally have higher alcohol content.
 
 __Density:__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(data = white.wine.df, aes(x = quality.category, y = density)) +
+ggplot(data = white.wine.df, aes(x = quality, y = density)) +
   geom_boxplot(aes(fill = quality.category)) +
   coord_flip(ylim = c(0.985, 1.015)) +
   labs(x = "Quality Category", y = "Density\n(g/cm^3)", 
@@ -741,7 +741,7 @@ Better rated wines tend to have lower `density`.
 
 __Chlorides:__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(data = white.wine.df, aes(x = quality.category, y = chlorides)) +
+ggplot(data = white.wine.df, aes(x = quality, y = chlorides)) +
   geom_boxplot(aes(fill = quality.category)) +
   coord_flip(ylim = c(0, 0.15)) +
   labs(x = "Quality Category", y = "Sodium chloride\n(g / dm^3)", 
