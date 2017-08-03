@@ -1095,10 +1095,42 @@ dictator of quality.
 
 # Reflection
 
-> **Tip**: Here's the final step! Reflect on the exploration you performed and
-the insights you found. What were some of the struggles that you went through?
-What went well? What was surprising? Make sure you include an insight into
-future work that could be done with the dataset.
+This was a rewarding data set to work on from both a professional and personal 
+perspective. Going through a full analysis of the data, starting at a 
+univariate level, progressing through a bivariate level, then finishing 
+at a multivariate level, gave me the opportunity to apply and polish what 
+I have learned. What I especially enjoyed was customizing plots. I was 
+able to learn much more about ggplot2 in the process: the different layers 
+available, some of their respective intricacies, and the various ways I could 
+portray my findings.
 
-> **Tip**: Don't forget to remove this, and the other **Tip** sections before
-saving your final work and knitting the final report!
+From a personal perspective, I loved learning more about wine! My academic 
+background is in chemistry and I have a particular fondness for natural 
+product chemistry and food chemistry. 
+
+Although I wouldn't deem them "struggles" exactly, having to rummage the 
+internet and other resources (I have a copy of "R in a Nutshell") for code
+solutions took time and effort. For example, getting a good grasp of the 
+`theme()` layer took a good amount of investigation. 
+
+Another challenge was making sense of some of the observations resulting from 
+my queries. This was the fun part though! I never knew that "New World" wines 
+were a class of wines, nor that they were defined by having riper, fruitier 
+flavors compared to "Old World" wines. It was also interesting to learn that 
+these in fashion wines are fermented with riper grapes (more sugar rich) 
+leading to more alcoholic wines -- explaining my original observation that 
+wines with higher `quality` ratings tended to have higher `alcohol`.
+
+I was also suprised by my findings for `quality` and `chlorides`. I had no 
+clue that wines could be "salty" to a detectable level, though it makes 
+sense that these wines would have a lower `quality`. I don't think I would 
+seek out or enjoy a noticeably salty wine!
+
+In the future, once I have learned more about predictive modeling, I think 
+building a model could be very interesting. It would be a great way to 
+test my present findings and also to get a better understanding of what people 
+look for in wines. Another thing that would interesting would be repeating 
+the experiment and adding more variable -- e.g. all the major acids like 
+malic, lactic, succinic acid, etc. Many of these have profound effects on 
+the sensory experience of wine. So we may be missing important information 
+if these are not included.
