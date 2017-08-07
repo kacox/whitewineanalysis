@@ -36,6 +36,9 @@ library(GGally)
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 # Load the Data
 white.wine.df <- read.csv("wineQualityWhites.csv")
+
+# Remove "X" variable
+white.wine.df$X <- NULL
 ```
 
 ***
