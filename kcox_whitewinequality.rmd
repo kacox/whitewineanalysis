@@ -51,23 +51,27 @@ str(white.wine.df)
 summary(white.wine.df)
 ```
 
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# Custom generic function for making histograms
+make_histogram <- function(dataset, variable, x.label) 
+  {return(ggplot(data = white.wine.df, aes(x = variable)) +
+  geom_histogram() +
+  labs(x = x.label))}
+```
+
+
 ### Organic acid contents and overall acidity (pH)  
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-ta.hist <- ggplot(data = white.wine.df, aes(x = fixed.acidity)) +
-  geom_histogram() +
-  labs(x = expression("Fixed acidity in"~g/dm^3~"tartaric acid"))
+ta.hist <- make_histogram(white.wine.df, white.wine.df$fixed.acidity, 
+                          expression("Fixed acidity in"~g/dm^3~"tartaric acid"))
 
-ca.hist <- ggplot(data = white.wine.df, aes(x = citric.acid)) +
-  geom_histogram() +
-  labs(x = expression("Citric Acid in"~g/dm^3))
+ca.hist <- make_histogram(white.wine.df, white.wine.df$citric.acid, 
+                          expression("Citric Acid in"~g/dm^3))
 
-aa.hist <- ggplot(data = white.wine.df, aes(x = volatile.acidity)) +
-  geom_histogram() +
-  labs(x = expression("Volatile acidity in"~g/dm^3~"acetic acid"))
+aa.hist <- make_histogram(white.wine.df, white.wine.df$volatile.acidity, 
+                          expression("Volatile acidity in"~g/dm^3~"acetic acid"))
 
-ph.hist <- ggplot(data = white.wine.df, aes(x = pH)) +
-  geom_histogram() +
-  labs(x = "pH")
+ph.hist <- make_histogram(white.wine.df, white.wine.df$pH, "pH")
 
 grid.arrange(ta.hist, ca.hist, aa.hist, ph.hist, ncol =2)
 ```
@@ -123,17 +127,16 @@ follow the normal distribution.
 
 ### Sulfur measures
 ```{r Sulfur measures, echo=FALSE, message=FALSE, warning=FALSE}
-sulf.hist <- ggplot(data = white.wine.df, aes(x = sulphates)) +
-  geom_histogram() +
-  labs(x = expression("Sulphates in"~g/dm^3))
+sulf.hist <- make_histogram(white.wine.df, white.wine.df$sulphates, 
+                            expression("Sulphates in"~g/dm^3))
 
-free.sulf.diox <- ggplot(data = white.wine.df, aes(x = free.sulfur.dioxide)) +
-  geom_histogram() +
-  labs(x = expression("Free sulfur dioxide in"~mg/dm^3))
+free.sulf.diox <- make_histogram(white.wine.df, 
+                                 white.wine.df$free.sulfur.dioxide, 
+                                 expression("Free sulfur dioxide in"~mg/dm^3))
 
-total.sulf.diox <- ggplot(data = white.wine.df, aes(x = total.sulfur.dioxide)) +
-  geom_histogram() +
-  labs(x = expression("Total sulfur dioxide in"~mg/dm^3))
+total.sulf.diox <- make_histogram(white.wine.df, 
+                                  white.wine.df$total.sulfur.dioxide, 
+                                  expression("Total sulfur dioxide in"~mg/dm^3))
 
 grid.arrange(sulf.hist, free.sulf.diox, total.sulf.diox, ncol = 2)
 ```
@@ -179,13 +182,11 @@ cat("\n3rd quartile:",
 ### Other wine attributes
 __Density and residual sugar:__  
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-res.sugar.hist <- ggplot(data = white.wine.df, aes(x = residual.sugar)) +
-  geom_histogram() +
-  labs(x = expression("Residual sugars in"~g/dm^3))
+res.sugar.hist <- make_histogram(white.wine.df, white.wine.df$residual.sugar, 
+                                 expression("Residual sugars in"~g/dm^3))
 
-density.hist <- ggplot(data = white.wine.df, aes(x = density)) +
-  geom_histogram() +
-  labs(x = expression("Density in"~g/cm^3))
+density.hist <- make_histogram(white.wine.df, white.wine.df$density, 
+                               expression("Density in"~g/cm^3))
 
 grid.arrange(res.sugar.hist, density.hist, ncol = 2)
 ```
@@ -209,9 +210,8 @@ We can see that they are indeed the same wine.
 
 __Sodium chloride:__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-nacl.hist <- ggplot(data = white.wine.df, aes(x = chlorides)) +
-  geom_histogram() +
-  labs(x = expression("Sodium chloride in"~g/dm^3))
+nacl.hist <- make_histogram(white.wine.df, white.wine.df$chlorides, 
+                            expression("Sodium chloride in"~g/dm^3))
 
 summary(white.wine.df$chlorides)
 ```
@@ -234,9 +234,8 @@ consistent with the mean not being far from the median.
 
 __Alcohol (ABV - % by volume):__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(data = white.wine.df, aes(x = alcohol)) +
-  geom_histogram(binwidth = 0.25) +
-  labs(x = "Alcohol\n(ABV % by volume)")
+make_histogram(white.wine.df, white.wine.df$alcohol, 
+               "Alcohol\n(ABV % by volume)")
 ```
 
 The distribution of `alcohol` is roughly normal.
@@ -282,30 +281,32 @@ cat("Best rated wines:",
 I am going to focus on some of the features of the best wines.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-best.va.hist <- ggplot(data = subset(white.wine.df, quality.category == "Best"), 
-                       aes(x = volatile.acidity)) + 
-  geom_histogram(bins = 40)
+# Custom function for making histograms with "Best" wines
+best.subset <- subset(white.wine.df, quality.category == "Best")
 
-best.ph.hist <- ggplot(data = subset(white.wine.df, quality.category == "Best"), 
-                       aes(x = pH)) +
-  geom_histogram(bins = 40)
+make_best_histogram <- function(data, variable, label) 
+{return(ggplot(data = best.subset, aes(x = variable)) + 
+            geom_histogram(bins = 40) +
+          labs(x = label))}
 
-best.fsd.hist <- ggplot(data = subset(white.wine.df, quality.category == "Best"), 
-                        aes(x = free.sulfur.dioxide)) +
-  geom_histogram(bins = 40)
+best.va.hist <- make_best_histogram(best.subset, best.subset$volatile.acidity, 
+                                    "Volatile Acidity")
 
-best.rs.hist <- ggplot(data = subset(white.wine.df, quality.category == "Best"), 
-                       aes(x = residual.sugar)) +
-  geom_histogram(bins = 40)
+best.ph.hist <- make_best_histogram(best.subset, best.subset$pH, 
+                                    "pH")
 
-best.alcohol.hist <- ggplot(data = subset(white.wine.df, 
-                                          quality.category == "Best"), 
-                            aes(x = alcohol)) +
-  geom_histogram(bins = 40)
+best.fsd.hist <- make_best_histogram(best.subset, 
+                                     best.subset$free.sulfur.dioxide, 
+                                    "Free Sulfur Dioxide")
 
-best.nacl.hist <- ggplot(data = subset(white.wine.df, quality.category == "Best"), 
-                         aes(x = chlorides)) +
-  geom_histogram(bins = 40)
+best.rs.hist <- make_best_histogram(best.subset, best.subset$residual.sugar, 
+                                    "Residual Sugar")
+
+best.alcohol.hist <- make_best_histogram(best.subset, best.subset$alcohol, 
+                                    "Alcohol")
+
+best.nacl.hist <- make_best_histogram(best.subset, best.subset$chlorides, 
+                                    "Chlorides")
 
 grid.arrange(best.va.hist, best.ph.hist, best.fsd.hist, best.rs.hist, best.alcohol.hist, best.nacl.hist, ncol = 2)
 ```
@@ -461,6 +462,7 @@ Taking a close look at above findings between different pairs of chemical
 properties (based on correlation coefficient findings).
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# Theme settings for scatterplots
 scatterplot.theme <- theme(panel.background = element_rect(fill="white", 
                                                        color="white"),
         panel.grid.major.y = element_line(color = "gray70"),
@@ -468,58 +470,92 @@ scatterplot.theme <- theme(panel.background = element_rect(fill="white",
         panel.grid.minor.x = element_blank(), 
         plot.title = element_text(size=18, hjust=0.5),
         legend.title = element_blank())
+
+# Settings for geom_point and geom_smooth
+gp_custom <- geom_point(color = "dodgerblue4", alpha = 0.1, 
+                              position = "jitter")
+gs_custom <- geom_smooth(method = "lm", color = "navy")
+
+# Custom function to generate scatterplots
+make_scatterplot <- function(dataset, x.var, y.var, 
+                             x.label, y.label, title,
+                             x.lim = NULL, y.lim = NULL) 
+{if (!is.null(x.lim) & !is.null(y.lim)) {return(ggplot(data = dataset, 
+                 aes(x = x.var, y = y.var)) + 
+                   gp_custom + 
+                   gs_custom + 
+                   coord_cartesian(xlim = x.lim, ylim = y.lim) + 
+                   labs(x = x.label, y = y.label, title = title) + 
+                   scatterplot.theme)} 
+  
+  else if (!is.null(y.lim)) {return(ggplot(data = dataset, 
+                 aes(x = x.var, y = y.var)) + 
+                   gp_custom + 
+                   gs_custom + 
+                   coord_cartesian(ylim = y.lim) + 
+                   labs(x = x.label, y = y.label, title = title) + 
+                   scatterplot.theme)} 
+  
+  else if (!is.null(x.lim)) {return(ggplot(data = dataset, 
+                 aes(x = x.var, y = y.var)) + 
+                   gp_custom + 
+                   gs_custom + 
+                   coord_cartesian(xlim = x.lim) + 
+                   labs(x = x.label, y = y.label, title = title) + 
+                   scatterplot.theme)} 
+  
+  else {return(ggplot(data = dataset, aes(x = x.var, y = y.var)) + 
+                 gp_custom + 
+                 gs_custom + 
+                 labs(x = x.label, y = y.label, title = title) + 
+                 scatterplot.theme)}
+}
+
+# Custom reporting function
+report.pearson <- function(x.var, y.var) {cat("r =", 
+                                              as.character(cor(x = x.var, 
+                                                               y = y.var, 
+                                                               method = 
+                                                                 "pearson")))}
 ```
 
 __pH and Fixed Acidity__  
 [With 4 "far out" outliers eliminated](https://en.wikipedia.org/wiki/Outlier#Tukey.27s_test)  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-fa.iqr <- quantile(white.wine.df$fixed.acidity, 0.75) - quantile(white.wine.df$fixed.acidity , 0.25)
+fa.iqr <- quantile(white.wine.df$fixed.acidity, 0.75) - 
+  quantile(white.wine.df$fixed.acidity , 0.25)
 fa.no.outliers <- subset(white.wine.df, white.wine.df$fixed.acidity < 
-                       (quantile(white.wine.df$fixed.acidity, 0.75) + 3*fa.iqr))
+                       (quantile(white.wine.df$fixed.acidity, 0.75) + 
+                          3*fa.iqr))
 
-ggplot(data = fa.no.outliers, aes(x = fixed.acidity, y = pH)) +
-  geom_point(color = "dodgerblue4", alpha = 0.2, position = "jitter") +
-  geom_smooth(method = "lm", color = "navy") +
-  labs(x = "Fixed acidity (g / dm^3)", y = "pH", title = "pH by Fixed Acidity") + 
-  scatterplot.theme
-```
+make_scatterplot(fa.no.outliers, fa.no.outliers$fixed.acidity, 
+                 fa.no.outliers$pH, "Fixed acidity (g / dm^3)", 
+                 "pH", "pH by Fixed Acidity")
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-cat("r =", as.character(cor(x = white.wine.df$fixed.acidity, 
-                       y = white.wine.df$pH, method = "pearson")))
+report.pearson(white.wine.df$fixed.acidity, white.wine.df$pH)
 ```
 
 __Total sulfur dioxide and free sulfur dioxide__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(data = white.wine.df, aes(x = free.sulfur.dioxide, y = total.sulfur.dioxide)) +
-  geom_point(color = "dodgerblue4", alpha = 0.1, position = "jitter") +
-  geom_smooth(method = "lm", color = "navy") +
-  coord_cartesian(xlim = c(0,150)) +
-  labs(x = "Free Sulfur Dioxide\n(mg / dm^3)", y = "Total Sulfur Dioxide\n(mg / dm^3)", title = "Total vs. Free Sulfur Dioxide") + 
-  scatterplot.theme
-```
+make_scatterplot(white.wine.df, white.wine.df$free.sulfur.dioxide, 
+                 white.wine.df$total.sulfur.dioxide, 
+                 "Free Sulfur Dioxide\n(mg / dm^3)", 
+                 "Total Sulfur Dioxide\n(mg / dm^3)", 
+                 "Total vs. Free Sulfur Dioxide", c(0,150))
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-cat("r =", as.character(cor(x = white.wine.df$free.sulfur.dioxide, 
-                       y = white.wine.df$total.sulfur.dioxide, 
-                       method = "pearson")))
+report.pearson(white.wine.df$free.sulfur.dioxide, 
+               white.wine.df$total.sulfur.dioxide)
 ```
 
 __Density vs. residual sugar__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(data = white.wine.df, aes(x = residual.sugar, y = density)) +
-  geom_point(color = "dodgerblue4", alpha = 0.1, position = "jitter") +
-  geom_smooth(method = "lm", color = "navy") +
-  coord_cartesian(xlim = c(0, 35), ylim = c(0.985, 1.015)) +
-  labs(x = "Residual Sugar\n(g / dm^3)", y = "Density\n(g / cm^3)", 
-       title = "Density vs. Residual Sugar") + 
-  scatterplot.theme
-```
+make_scatterplot(white.wine.df, white.wine.df$residual.sugar, 
+                 white.wine.df$density, 
+                 "Residual Sugar\n(g / dm^3)", 
+                 "Density\n(g / cm^3)", 
+                 "Density vs. Residual Sugar", c(0, 35), c(0.985, 1.015))
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-cat("r =", as.character(cor(x = white.wine.df$residual.sugar, 
-                       y = white.wine.df$density, 
-                       method = "pearson")))
+report.pearson(white.wine.df$residual.sugar, white.wine.df$density)
 ```
 
 __Alcohol vs. residual sugar__  
@@ -532,48 +568,31 @@ ggplot(data = white.wine.df, aes(x = residual.sugar, y = alcohol)) +
   labs(x = "Residual Sugar\n(g / dm^3)", y = "Alcohol\n(% by Volume)", 
        title = "Alcohol vs. Residual Sugar") + 
   scatterplot.theme
-```
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-cat("r =", as.character(cor(x = white.wine.df$residual.sugar, 
-                       y = white.wine.df$alcohol, 
-                       method = "pearson")))
+report.pearson(white.wine.df$residual.sugar, white.wine.df$alcohol)
 ```
 
 __Density vs. alcohol__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(data = white.wine.df, aes(x = alcohol, y = density)) +
-  geom_point(color = "dodgerblue4", alpha = 0.1, position = "jitter") +
-  geom_smooth(method = "lm", color = "navy") + 
-  coord_cartesian(ylim = c(0.985, 1.015)) + 
-  labs(x = "Alcohol\n(% by volume)", y = "Density\n(g / cm^3)", 
-       title = "Density vs. Alcohol") + 
-  scatterplot.theme
-```
+make_scatterplot(white.wine.df, white.wine.df$alcohol, 
+                 white.wine.df$density, 
+                 "Alcohol\n(% by volume)", 
+                 "Density\n(g / cm^3)", 
+                 "Density vs. Alcohol", NULL, c(0.985, 1.015))
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-cat("r =", as.character(cor(x = white.wine.df$alcohol, 
-                       y = white.wine.df$density, 
-                       method = "pearson")))
+report.pearson(white.wine.df$alcohol, white.wine.df$density)
 ```
 
 __Density and Total Sulfur Dioxide__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(data = white.wine.df, aes(x = total.sulfur.dioxide, y = density)) +
-  geom_point(color = "dodgerblue4", alpha = 0.1, position = "jitter") +
-  geom_smooth(method = "lm", color = "navy") + 
-  coord_cartesian(ylim = c(0.985, 1.015)) + 
-  labs(x = "Total Sulfur Dioxide\n(mg / dm^3)", y = "Density\n(g / cm^3)", 
-       title = "Density vs. Total Sulfur Dioxide") + 
-  scatterplot.theme
-```
+make_scatterplot(white.wine.df, white.wine.df$total.sulfur.dioxide, 
+                 white.wine.df$density, 
+                 "Total Sulfur Dioxide\n(mg / dm^3)", 
+                 "Density\n(g / cm^3)", 
+                 "Density vs. Total Sulfur Dioxide", NULL, c(0.985, 1.015))
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-cat("r =", as.character(cor(x = white.wine.df$total.sulfur.dioxide, 
-                       y = white.wine.df$density, 
-                       method = "pearson")))
+report.pearson(white.wine.df$total.sulfur.dioxide, white.wine.df$density)
 ```
-
 
 ### Relationships between quality and other chemical properties
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
@@ -586,22 +605,27 @@ boxplot.theme <- theme(panel.background = element_rect(fill="gray90",
         plot.title = element_text(size=18, hjust=0.5),
         legend.title = element_blank())
 
+# Boxplot category colors
 boxplot.colors <- scale_fill_manual(values=c("green3", "deepskyblue3", "red2"))
+
+# Custom function to make boxplots
+make_boxplot <- function(numeric.var, 
+                         y.label, title) 
+  {ggplot(data = white.wine.df, aes(x = quality, y = numeric.var)) + 
+    geom_boxplot(aes(fill = quality.category)) + 
+    coord_flip() + 
+    labs(x = "Quality Category", y = y.label, title = title) + 
+    boxplot.colors + 
+    boxplot.theme + 
+    stat_summary(fun.y = mean, geom = "point", shape = 4)}
 ```
 
 __Volatile acidity:__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(data = white.wine.df, aes(x = quality, y = volatile.acidity)) +
-  geom_boxplot(aes(fill = quality.category)) +
-  coord_flip() +
-  labs(x = "Quality Category", y = "Volatile Acidity\n(g/dm^3)",
-       title = "Volatile Acidity by Quality") +
-  boxplot.colors +
-  boxplot.theme +
-  stat_summary(fun.y = mean, geom = "point", shape = 4)
-```
+make_boxplot(white.wine.df$volatile.acidity, 
+             "Volatile Acidity\n(g/dm^3)", 
+             "Volatile Acidity by Quality")
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
 cat("Median volatile acidity for 'Best' wines:", 
     as.character(median(subset(white.wine.df,
                                white.wine.df$quality.category == 
@@ -620,16 +644,8 @@ It seems that poorly rated wines tend to have higher `volatile.acidity`.
 
 __pH:__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(data = white.wine.df, aes(x = quality, y = pH)) +
-  geom_boxplot(aes(fill = quality.category)) +
-  coord_flip() +
-  labs(x = "Quality Category", y = "pH", title = "pH by Quality") +
-  boxplot.colors +
-  boxplot.theme +
-  stat_summary(fun.y = mean, geom = "point", shape = 4)
-```
+make_boxplot(white.wine.df$pH, "pH", "pH by Quality")
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
 cat("Median pH for 'Best' wines:", 
     as.character(median(subset(white.wine.df,
                                white.wine.df$quality.category == 
@@ -649,18 +665,10 @@ wines have a lot of variability.
 
 __Free sulfur dioxide:__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(data = white.wine.df, aes(x = quality, 
-                                 y = free.sulfur.dioxide)) +
-  geom_boxplot(aes(fill = quality.category)) +
-  coord_flip(ylim = c(0, 150)) +
-  labs(x = "Quality Category", y = "Free Sulfur Dioxide\n(mg / dm^3)", 
-       title = "Free Sulfur Dioxide by Quality") +
-  stat_summary(fun.y = mean, geom = "point", shape = 4) +
-  boxplot.colors +
-  boxplot.theme
-```
+make_boxplot(white.wine.df$free.sulfur.dioxide, 
+             "Free Sulfur Dioxide\n(mg / dm^3)", 
+             "Free Sulfur Dioxide by Quality")
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
 cat("Median Free Sulfur Dioxide for 'Best' wines:", 
     as.character(median(subset(white.wine.df,
                                white.wine.df$quality.category == 
@@ -689,18 +697,10 @@ This may distort the "Worst" category as a group.
 
 __Total sulfur dioxide:__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(data = white.wine.df, aes(x = quality, 
-                                 y = total.sulfur.dioxide)) +
-  geom_boxplot(aes(fill = quality.category)) +
-  coord_flip() +
-  labs(x = "Quality Category", y = "Total Sulfur Dioxide\n(mg / dm^3)", 
-       title = "Total Sulfur Dioxide by Quality") +
-  stat_summary(fun.y = mean, geom = "point", shape = 4) +
-  boxplot.colors +
-  boxplot.theme
-```
+make_boxplot(white.wine.df$total.sulfur.dioxide, 
+             "Total Sulfur Dioxide\n(mg / dm^3)", 
+             "Total Sulfur Dioxide by Quality")
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
 cat("Median Total Sulfur Dioxide for 'Best' wines:", 
     as.character(median(subset(white.wine.df,
                                white.wine.df$quality.category == 
@@ -720,17 +720,9 @@ There appears to be a slight positive trend between `total.sulfur.dioxide` and
 
 __Alcohol (ABV - % by volume):__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(data = white.wine.df, aes(x = quality, y = alcohol)) +
-  geom_boxplot(aes(fill = quality.category)) +
-  coord_flip() +
-  labs(x = "Quality Category", y = "Alcohol\n(ABV)", 
-       title = "ABV by Quality") +
-  stat_summary(fun.y = mean, geom = "point", shape = 4) +
-  boxplot.colors +
-  boxplot.theme
-```
+make_boxplot(white.wine.df$alcohol, 
+             "Alcohol\n(ABV)", "ABV by Quality")
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
 cat("Median Alcohol for 'Best' wines:", 
     as.character(median(subset(white.wine.df,
                                white.wine.df$quality.category == 
@@ -749,17 +741,9 @@ The better rated wines generally have higher alcohol content.
 
 __Density:__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(data = white.wine.df, aes(x = quality, y = density)) +
-  geom_boxplot(aes(fill = quality.category)) +
-  coord_flip(ylim = c(0.985, 1.015)) +
-  labs(x = "Quality Category", y = "Density\n(g/cm^3)", 
-       title = "Density by Quality") +
-  stat_summary(fun.y = mean, geom = "point", shape = 4) +
-  boxplot.colors +
-  boxplot.theme
-```
+make_boxplot(white.wine.df$density, 
+             "Density\n(g/cm^3)", "Density by Quality")
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
 cat("Median Density for 'Best' wines:", 
     as.character(median(subset(white.wine.df,
                                white.wine.df$quality.category == 
@@ -778,17 +762,10 @@ Better rated wines tend to have lower `density`.
 
 __Chlorides:__  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(data = white.wine.df, aes(x = quality, y = chlorides)) +
-  geom_boxplot(aes(fill = quality.category)) +
-  coord_flip(ylim = c(0, 0.15)) +
-  labs(x = "Quality Category", y = "Sodium chloride\n(g / dm^3)", 
-       title = "Sodium Chloride Content by Quality") +
-  stat_summary(fun.y = mean, geom = "point", shape = 4) +
-  boxplot.colors +
-  boxplot.theme
-```
+make_boxplot(white.wine.df$chlorides, 
+             "Sodium chloride\n(g / dm^3)", 
+             "Sodium Chloride Content by Quality")
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
 cat("Median Chlorides for 'Best' wines:", 
     as.character(median(subset(white.wine.df,
                                white.wine.df$quality.category == 
@@ -1048,15 +1025,9 @@ N/A
 
 ### Plot One
 ```{r echo=FALSE, Plot_One}
-fa.iqr <- quantile(white.wine.df$fixed.acidity, 0.75) - quantile(white.wine.df$fixed.acidity , 0.25)
-fa.no.outliers <- subset(white.wine.df, white.wine.df$fixed.acidity < 
-                       (quantile(white.wine.df$fixed.acidity, 0.75) + 3*fa.iqr))
-
-ggplot(data = fa.no.outliers, aes(x = fixed.acidity, y = pH)) +
-  geom_point(color = "dodgerblue4", alpha = 0.2, position = "jitter") +
-  geom_smooth(method = "lm", color = "navy") +
-  labs(x = "Fixed acidity (g / dm^3)", y = "pH", title = "pH by Fixed Acidity") + 
-  scatterplot.theme
+make_scatterplot(fa.no.outliers, fa.no.outliers$fixed.acidity, 
+                 fa.no.outliers$pH, "Fixed acidity (g / dm^3)", 
+                 "pH", "pH by Fixed Acidity")
 ```
 
 ### Description One
@@ -1077,15 +1048,8 @@ that there was much less of either acid present compared to tartaric acid.
 
 ### Plot Two
 ```{r echo=FALSE, Plot_Two}
-ggplot(data = white.wine.df, aes(x = quality, y = alcohol)) +
-  geom_boxplot(aes(fill = quality.category)) +
-  coord_flip() +
-  labs(x = "Quality Category", y = "Alcohol\n(% by Volume)", 
-       title = "Alcohol Content by Quality") +
-  stat_summary(fun.y = mean, geom = "point", shape = 4) +
-  boxplot.colors +
-  boxplot.theme + 
-  guides(fill = guide_legend(reverse=TRUE))
+make_boxplot(white.wine.df$alcohol, 
+             "Alcohol\n(ABV)", "ABV by Quality")
 ```
 
 ### Description Two
