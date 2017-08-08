@@ -939,13 +939,14 @@ I do not have a quantification for the strongest relationship between
 
 # Multivariate Plots Section
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(data = white.wine.df, aes(x = (4 * round(density / 4, digits = 4)), 
+# Gives the median alcohol for a given density (binned)
+ggplot(data = white.wine.df, aes(x = (2 * round(density / 2, digits = 4)), 
                                  y = alcohol)) + 
-  geom_line(aes(color = quality.category), stat = "summary", fun.y = median, 
-            size = 1) + 
+  geom_point(aes(color = quality.category), stat = "summary", fun.y = median, 
+            size = 2) + 
   coord_cartesian(x = c(0.985, 1.010)) +
-  labs(title = "Alcohol vs. Density by Quality Category\n(Binned)", 
-       x = "Density (Binned)", y = "Alcohol") + 
+  labs(title = "Median Alcohol for Density by Quality Category\n(Binned)", 
+       x = "Density (g/cm^3)\n(Binned)", y = "Alcohol\n(% by Volume)") + 
   theme(panel.background = element_rect(fill="white", color="white"),
         panel.grid.major.y = element_line(color = "gray70"),
         panel.grid.major.x = element_line(color = "gray70"),
@@ -955,29 +956,18 @@ ggplot(data = white.wine.df, aes(x = (4 * round(density / 4, digits = 4)),
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(aes(x = (5 * round(pH / 5, digits = 2)), y = volatile.acidity), 
-       data = white.wine.df) + 
-  geom_line(aes(color = quality), stat = "summary", fun.y = median, size = 1) +
-  labs(title = "Volatile acidity vs. pH by Quality Category\n(Binned)", 
-       x = "pH (Binned)", y = "Volatile Acidity") + 
-  theme(panel.background = element_rect(fill="white", color="white"),
-        panel.grid.major.y = element_line(color = "gray70"),
-        panel.grid.major.x = element_line(color = "gray70"),
-        panel.grid.minor.x = element_blank(), 
-        plot.title = element_text(size=18, hjust=0.5))
-```
-
-```{r echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(aes(x = (2 * round(pH / 2, digits = 2)), y = volatile.acidity), 
        data = white.wine.df) + 
   geom_point(aes(color = quality)) +
   labs(title = "Volatile acidity vs. pH by Quality Category\n(Binned)", 
-       x = "pH (Binned)", y = "Volatile Acidity") + 
-  theme(panel.background = element_rect(fill="white", color="white"),
-        panel.grid.major.y = element_line(color = "gray70"),
-        panel.grid.major.x = element_line(color = "gray70"),
+       x = "pH\n(Binned)", y = expression("Volatile Acidity"~(g/dm^3))) + 
+  theme(panel.background = element_rect(fill="gray40"),
+        panel.grid.major.y = element_line(color = "gray20"),
+        panel.grid.major.x = element_line(color = "gray20"),
         panel.grid.minor.x = element_blank(), 
-        plot.title = element_text(size=18, hjust=0.5))
+        panel.grid.minor.y = element_blank(), 
+        plot.title = element_text(size=18, hjust=0.5)) +
+  scale_color_brewer(type = "div", palette = "Spectral")
 ```
 
 # Multivariate Analysis
@@ -991,23 +981,15 @@ As seen before, `alcohol` and `density` are strongly related to one another:
 regardless of a wine's category, `alcohol` and `density` are negatively 
 correlated. Also from earlier exploration, the relationship between 
 `quality.category` and `alcohol` still holds true. The "Best" category wines 
-tend to have higher `alcohol` than their peers at the same `density` when 
-`density` is less than 0.9955 g/cm^3.
+tend to have higher `alcohol` than their peers, "Middle" wines tend to be 
+between, and "Worst" tends to be have the least `alcohol`.
 
-I also tried plotting `volatile.acidity`, `pH` and `quality` two different 
-ways: a line plot and a scatterplot form. Each brought different insights.
-
-The line plot showed that the worse quality wine (ratings 3 and 4) tended 
-toward higher `volatile.acidity`, regardless of pH (though there were some 
-spikes). The middle rated wines (5, 6, 7) can be seen closer to the bottom 
-(lower `volatile.acidity`) and also spanning the largest pH range. The highest 
-rating category in this data set (9) spans the shortest pH range.
-
-The scatterplot makes it unmistakably clear that the middle rated wines are 
+I also plotted `volatile.acidity`, `pH` and `quality` as a scatterplot. I 
+binned pH because there was worse overplotting in the un-binned form. The 
+scatterplot makes it unmistakably clear that the middle rated wines are 
 the most abundant and span across the widest pH scale. It is also possible to 
 see that wines with higher `volatile.acidity` are a mix of the worst rated 
-wines and middle rated wines; however, worse rated wines tend to appear with 
-higher rather than lower `volatile.acidity`.
+wines and middle rated wines.
 
 ### Were there any interesting or surprising interactions between features?
 
@@ -1064,28 +1046,29 @@ alcohol content.
 
 ### Plot Three
 ```{r echo=FALSE, Plot_Three}
-ggplot(aes(x = (5 * round(pH / 5, digits = 2)), y = volatile.acidity), 
+ggplot(aes(x = (2 * round(pH / 2, digits = 2)), y = volatile.acidity), 
        data = white.wine.df) + 
-  geom_line(aes(color = quality), stat = "summary", fun.y = median, size = 1) +
+  geom_point(aes(color = quality)) +
   labs(title = "Volatile acidity vs. pH by Quality Category\n(Binned)", 
-       x = "pH (Binned)", y = "Volatile Acidity") + 
-  theme(panel.background = element_rect(fill="white", color="white"),
-        panel.grid.major.y = element_line(color = "gray70"),
-        panel.grid.major.x = element_line(color = "gray70"),
+       x = "pH\n(Binned)", y = expression("Volatile Acidity"~(g/dm^3))) + 
+  theme(panel.background = element_rect(fill="gray40"),
+        panel.grid.major.y = element_line(color = "gray20"),
+        panel.grid.major.x = element_line(color = "gray20"),
         panel.grid.minor.x = element_blank(), 
-        plot.title = element_text(size=18, hjust=0.5))
+        panel.grid.minor.y = element_blank(), 
+        plot.title = element_text(size=18, hjust=0.5)) +
+  scale_color_brewer(type = "div", palette = "Spectral")
 ```
 
 ### Description Three
-Although this line plot may seem somewhat noisy, it actually contains a lot 
-of information of use. The finer details are discussed in the 
-__Multivariate Analysis__ section, but overall it shows a slight trend in 
+Although this line plot is somewhat noisy, it actually contains a some 
+of information of use. It shows a slight trend in 
 quality and volatile acidity. It also shows that no significant relationship 
 exists between pH and volatile acidity (which reinforces previous findings).
 
 At a bigger picture level, this plot demonstrates that more is at work when 
-it comes to quality rating: there are peaks and valleys for the different 
-quality ratings, meaning some wines certainly buck the trend for 
+it comes to quality rating: there are wines of different `quality` rating 
+present all about, meaning some wines certainly buck the trend for 
 `volatile.acidity`. It also shows the diversity in pH for wines. These 
 observations reinforce my general impression that quality is influenced by 
 multiple chemical properties of wine; that no one property is the ultimate 
