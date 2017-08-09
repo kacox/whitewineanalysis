@@ -17,7 +17,8 @@ _Decision Support Systems_. **2009**, 47, 547-553.
 quality of white wines?
 
 ## Files
-**kcox_whitewinequality.rmd** - Main file with all code (R Markdown)  
+**kcox_whitewinequality.html** - Main file of finished project (HTML file)  
+**kcox_whitewinequality.rmd** - File with all code (R Markdown)  
 **wineQualityWhites.csv** - Data source for analysis (CSV)  
 **wineQualityInfo.txt** - Information on data set and variales (Plain text 
 file)  
