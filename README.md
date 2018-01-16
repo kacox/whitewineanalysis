@@ -1,6 +1,8 @@
 ### whitewineanalysis
 # Repository for White Wine Analysis using R
 
+Finished project here: https://kacox.github.io/whitewineanalysis/
+
 ## Overview
 This project is an analysis of a tidy data set contains 4,898 white wines with 
 11 variables on quantifying the chemical properties of each wine. At least 3 
@@ -17,7 +19,7 @@ _Decision Support Systems_. **2009**, 47, 547-553.
 quality of white wines?
 
 ## Files
-**kcox_whitewinequality.html** - Main file of finished project (HTML file)  
+**index.html** - Main file of finished project (HTML file)  
 **kcox_whitewinequality.rmd** - File with all code (R Markdown)  
 **wineQualityWhites.csv** - Data source for analysis (CSV)  
 **wineQualityInfo.txt** - Information on data set and variales (Plain text 
